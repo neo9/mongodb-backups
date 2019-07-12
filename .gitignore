@@ -4,3 +4,5 @@
 config.yaml
 config.yml
 .env
+mongodb-backups
+vendor
