@@ -1,0 +1,6 @@
+.idea
+*.swo
+*.swp
+config.yaml
+config.yml
+.env
