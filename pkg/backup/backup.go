@@ -18,6 +18,7 @@ func MongoDBDump(mongodb *config.MongoDB, name string) ([]string, error) {
 	outputFile := path.Join("/tmp", fmt.Sprintf("mongodb-backup-%s-%d", name, time.Now().Unix()))
 	archiveFile := outputFile + ".gz"
 	logFile := outputFile + ".log"
+
 	dumpCommand := fmt.Sprintf("mongodump --archive=%v --gzip --host %s --port %s",
 		archiveFile,
 		mongodb.Host,
@@ -31,11 +32,13 @@ func MongoDBDump(mongodb *config.MongoDB, name string) ([]string, error) {
 	}
 
 	log.Infof("Done creating dump for %s", name)
+
 	err = logToFile(logFile, output)
 	if err != nil {
 		log.Errorf("Error writing dump log file: %v", err)
 		return []string{archiveFile}, err
 	}
+
 	log.Infof("Done creating log file for %s", name)
 
 	return []string{archiveFile, logFile}, nil

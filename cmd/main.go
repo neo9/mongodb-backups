@@ -33,7 +33,9 @@ func main() {
 		panic(err)
 	}
 
-	scheduler.New(&plan).LaunchScheduler()
+	backupScheduler := scheduler.New(&plan)
+	backupScheduler.Run()
+
 	server := &api.HttpServer{
 		Port: 8080,
 	}

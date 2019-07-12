@@ -23,9 +23,10 @@ Backup MongoDB dumps to S3 or GCS.
     - `mongodb`:
         - `host`: MongoDB host
         - `port`: MongoDB port
-- `s3`:
-    - `name`: bucket name
-    - `region`: bucket region
+- `bucket`: dictionary
+    - `s3`:
+        - `name`: bucket name
+        - `region`: bucket region
 
 
 

@@ -10,6 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
+
+type Bucket interface {
+	Upload(filename string, destFolder string) error
+}
+
 type S3Bucket struct {
 	Session *session.Session
 	S3 *config.S3
