@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/neo9/mongodb-backups/pkg/bucket"
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/metrics"
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,6 +13,7 @@ type Scheduler struct {
 	Cron *cron.Cron
 	Plan *config.Plan
 	Bucket bucket.Bucket
+	Metrics *metrics.BackupMetrics
 }
 
 func init() {
@@ -25,6 +27,7 @@ func New(plan *config.Plan) *Scheduler {
 		Plan: plan,
 		Cron: cron.New(),
 		Bucket: S3Bucket,
+		Metrics: metrics.New("mongodb_backups", "scheduler"),
 	}
 }
 

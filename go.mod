@@ -8,6 +8,9 @@ require (
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/google/pprof v0.0.0-20190723021845-34ac40c74b70 // indirect
 	github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/prometheus/client_golang v1.1.0
 	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/arch v0.0.0-20190312162104-788fe5ffcd8c // indirect

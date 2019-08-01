@@ -18,9 +18,9 @@ env:
 script:
 - set -e;
   go mod vendor;
-  go test ./pkg/utils/
-  go build -o ./mongodb-backup-linux-amd64 ./cmd
-  # ./ci/release.sh
+  go test ./pkg/utils/;
+  go build -o ./mongodb-backup-linux-amd64 ./cmd;
+  ./ci/release.sh
 
 deploy:
   provider: releases

@@ -20,21 +20,31 @@ func (scheduler *Scheduler) runBackup() {
 		return
 	}
 
-	scheduler.uploadToS3(mongoDBDump.ArchiveFile, scheduler.Plan.Name)
-	scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
+	err0 := scheduler.uploadToS3(mongoDBDump.ArchiveFile, scheduler.Plan.Name)
+	err1 := scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
+
+	if err0 != nil || err1 != nil {
+		scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, "error").Inc()
+	} else {
+		scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, "success").Inc()
+	}
 }
 
-func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) {
+func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) error {
 	log.Infof("Uploading mongodb file %s", path.Base(filename))
 
 	err := scheduler.Bucket.Upload(filename, destFolder)
 	if err != nil {
 		log.Errorf("Could not upload to S3: %v", err)
+		return err
 	}
 
 	err = os.Remove(filename)
 	if err != nil {
 		log.Errorf("Could not delete file: %v", err)
+		return err
 	}
+
+	return nil
 }
 
