@@ -30,8 +30,8 @@ Backup MongoDB dumps to S3 or GCS.
 
 ## Environment variables
 
-- `MONGO_USER`: MongoDB user
-- `MONGO_PASSWORD`: MongoDB password
+- `MONGODB_USER`: MongoDB user
+- `MONGODB_PASSWORD`: MongoDB password
 
 ## Development
 
