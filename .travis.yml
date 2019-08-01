@@ -19,7 +19,8 @@ script:
 - set -e;
   go mod vendor;
   go test ./pkg/utils/
-  go build -o ./mongodb-backup-linux-amd64 github.com/neo9/mongodb-backups/cmd
+  go build
+  # go build -o ./mongodb-backup-linux-amd64 github.com/neo9/mongodb-backups/cmd
   # ./ci/release.sh
 
 deploy:
