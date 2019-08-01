@@ -14,8 +14,11 @@ ADD pkg ./pkg
 
 RUN cd cmd  && go build -o /tmp/mongodb-backups
 
-FROM alpine:3.10
+FROM alpine:3.9
 
 COPY --from=builder /tmp/mongodb-backups /bin/mongodb-backup
+ENV MONGODB_TOOLS_VERSION 4.0.5-r0
+
+RUN apk add --no-cache mongodb-tools=${MONGODB_TOOLS_VERSION}
 
 CMD mongodb-backup

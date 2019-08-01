@@ -48,9 +48,6 @@ func (scheduler *Scheduler) Run() {
 
 	scheduler.Cron.Start()
 	scheduler.displaySchedule()
-
-	// TODO: remove
-	scheduler.deleteOldBackups()
 }
 
 func (scheduler *Scheduler) displaySchedule() {
