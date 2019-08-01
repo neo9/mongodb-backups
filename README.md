@@ -2,15 +2,15 @@
 
 Backup MongoDB dumps to S3 or GCS.
 
-**Work in progress**
+## Usage
+
+```bash
+./mongobackup --config ./config.yaml
+```
 
 ## TODO
 
-- Retention
 - Prometheus metrics and alerting
-- GCS support
-- Tests
-- Better error handler
 
 ## Config file
 

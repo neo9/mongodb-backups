@@ -1,6 +1,8 @@
 package bucket
 
 import (
+	"fmt"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"os"
@@ -13,6 +15,8 @@ import (
 
 type Bucket interface {
 	Upload(filename string, destFolder string) error
+	ListFiles(destFolder string) ([]string, error)
+	DeleteFile(filename string) error
 }
 
 type S3Bucket struct {
@@ -45,6 +49,39 @@ func (bucket *S3Bucket) Upload(filename string, destFolder string) error {
 		Key:    aws.String(path.Join(destFolder, path.Base(filename))),
 		Body:   file,
 		ServerSideEncryption: aws.String("AES256"),
+	})
+
+	return err
+}
+
+func (bucket *S3Bucket) ListFiles(destFolder string) ([]string, error) {
+    svc := s3.New(bucket.Session)
+
+	var files []string
+    i := 0
+	err := svc.ListObjectsPages(&s3.ListObjectsInput{
+		Bucket: &bucket.S3.Name,
+	}, func(p *s3.ListObjectsOutput, last bool) (shouldContinue bool) {
+		i++
+
+		for _, obj := range p.Contents {
+			files = append(files, *obj.Key)
+		}
+		return true
+	})
+	if err != nil {
+		fmt.Println("failed to list objects", err)
+		return []string{}, err
+	}
+
+	return files, nil
+}
+
+func (bucket *S3Bucket) DeleteFile(filename string) error {
+	svc := s3.New(bucket.Session)
+	_, err := svc.DeleteObject(&s3.DeleteObjectInput{
+		Bucket: &bucket.S3.Name,
+		Key: aws.String("//" + filename),
 	})
 
 	return err

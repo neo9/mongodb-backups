@@ -11,7 +11,6 @@ RUN go mod vendor
 
 ADD cmd ./cmd
 ADD pkg ./pkg
-RUN ls -lah
 
 RUN cd cmd  && go build -o /tmp/mongodb-backups
 
