@@ -8,16 +8,12 @@ import (
 )
 
 type Plan struct {
-	Backups []Backup `json:"backups,omitempty"`
-	Bucket Bucket `json:"buckets"`
-}
-
-type Backup struct {
 	Name string `json:"name"`
 	Schedule string `json:"schedule"`
 	Retention string `json:"retention"`
 	Timeout string `json:"timeout"`
 	MongoDB MongoDB `json:"mongodb"`
+	Bucket Bucket `json:"buckets"`
 }
 
 type Bucket struct {

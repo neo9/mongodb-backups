@@ -6,10 +6,7 @@ Backup MongoDB dumps to S3 or GCS.
 
 ## TODO
 
-- MongoDB authentication support with env variables
 - Retention
-- Timeout configuration
-- Code refactoring
 - Prometheus metrics and alerting
 - GCS support
 - Tests
@@ -17,16 +14,19 @@ Backup MongoDB dumps to S3 or GCS.
 
 ## Config file
 
-- `backups`: array
-    - `name`: backup name
-    - `schedule`: cronJob schedule. Example: `0 * * * *`
-    - `mongodb`:
-        - `host`: MongoDB host
-        - `port`: MongoDB port
+- `name`: backup name
+- `schedule`: cronJob schedule. Example: `0 * * * *`
+- `mongodb`:
+    - `host`: MongoDB host
+    - `port`: MongoDB port
 - `bucket`: dictionary
     - `s3`:
         - `name`: bucket name
         - `region`: bucket region
 
 
+## Environment variables
+
+- `MONGO_USER`: MongoDB user
+- `MONGO_PASSWORD`: MongoDB password
 

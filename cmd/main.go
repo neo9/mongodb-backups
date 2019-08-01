@@ -23,7 +23,7 @@ func printVersion() {
 
 func main() {
 	printVersion()
-	confPath := flag.String("path", "./config.yaml", "Plan config path")
+	confPath := flag.String("config", "./config.yaml", "Plan config path")
 	flag.Parse()
 	log.Infof("Parsing configuration file: %s", *confPath)
 

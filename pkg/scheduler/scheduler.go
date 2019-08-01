@@ -2,9 +2,9 @@ package scheduler
 
 import (
 	"fmt"
-	mongodb "github.com/neo9/mongodb-backups/pkg/backup"
 	"github.com/neo9/mongodb-backups/pkg/bucket"
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/mongodb"
 	"github.com/robfig/cron"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -31,56 +31,54 @@ func New(plan *config.Plan) *Scheduler {
 	}
 }
 
-func (scheduler *Scheduler) runBackup(backup config.Backup) {
-	log.Infof("Running backup %s", backup.Name)
-	filenames, err := mongodb.MongoDBDump(&backup.MongoDB, backup.Name)
+func (scheduler *Scheduler) runBackup() {
+	log.Infof("Running mongodb %s", scheduler.Plan.Name)
+
+	mongoDBDump, err := mongodb.CreateDump(scheduler.Plan)
 	if err != nil {
-		log.Errorf("Error creating dump for %s", backup.Name)
+		log.Errorf("Error creating dump for %s", scheduler.Plan.Name)
+		return
 	}
 
-	for i := 0; i < len(filenames); i++ {
-		log.Infof("Uploading backup file %s", path.Base(filenames[i]))
+	scheduler.uploadToS3(mongoDBDump.ArchiveFile, scheduler.Plan.Name)
+	scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
+}
 
-		err := scheduler.Bucket.Upload(filenames[i], backup.Name)
-		if err != nil {
-			log.Errorf("Could not upload to S3: %v", err)
-		}
+func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) {
+	log.Infof("Uploading mongodb file %s", path.Base(filename))
 
-		err = os.Remove(filenames[i])
-		if err != nil {
-			log.Errorf("Could not delete file: %v", err)
-		}
+	err := scheduler.Bucket.Upload(filename, destFolder)
+	if err != nil {
+		log.Errorf("Could not upload to S3: %v", err)
+	}
+
+	err = os.Remove(filename)
+	if err != nil {
+		log.Errorf("Could not delete file: %v", err)
 	}
 }
 
 func (scheduler *Scheduler) Run() {
-	for i := 0; i < len(scheduler.Plan.Backups); i++ {
-		backup := scheduler.Plan.Backups[i]
+	err := scheduler.Cron.AddFunc(fmt.Sprintf("0 %s", scheduler.Plan.Schedule), func() {
+		scheduler.runBackup()
+	})
 
-		err := scheduler.Cron.AddFunc(fmt.Sprintf("0 %s", backup.Schedule), func() {
-			scheduler.runBackup(backup)
-		})
-		if err != nil {
-			log.Errorf("Could schedule backup %s, error: %v", backup.Name, err)
-		}
-
-		log.Infof("Name: %s, Schedule: %s", backup.Name, backup.Schedule)
+	if err != nil {
+		log.Errorf("Could not schedule mongodb %s, error: %v", scheduler.Plan.Name, err)
 	}
+
+	log.Infof("Name: %s, Schedule: %s", scheduler.Plan.Name, scheduler.Plan.Schedule)
 
 	scheduler.Cron.Start()
-	scheduler.displaySchedules()
-	scheduler.runBackup(scheduler.Plan.Backups[0])
+	scheduler.displaySchedule()
+
+	// TODO: remove
+	scheduler.runBackup()
 }
 
-func (scheduler *Scheduler) displaySchedules() {
+func (scheduler *Scheduler) displaySchedule() {
 	entries := scheduler.Cron.Entries()
-	if len(scheduler.Plan.Backups) != len(entries) {
-		panic("Backup and cron entries are not the same length")
-	}
 
-	for i := 0; i < len(entries); i++ {
-		entry := entries[i]
-		backup := scheduler.Plan.Backups[i]
-		log.Infof("Backup %s will run at %v", backup.Name, entry.Next)
-	}
+	entry := entries[0]
+	log.Infof("Backup %s will run at %v", scheduler.Plan.Name, entry.Next)
 }
