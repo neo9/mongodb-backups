@@ -1,5 +1,8 @@
 # MongoDB backup
 
+[![Build Status](https://travis-ci.org/neo9/mongodb-backups.svg?branch=master)](https://travis-ci.org/neo9/mongodb-backups)
+
+
 Backup MongoDB dumps to S3 or GCS.
 
 ## Usage
