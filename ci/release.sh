@@ -1,8 +1,10 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
+set -e
 
 docker build -t neo9sas/mongodb-backup .
 
-if [ $TRAVIS_BRANCH == 'master' ]; then
+if [ "$TRAVIS_BRANCH" = 'master' ]; then
   echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_LOGIN" --password-stdin
   docker push neo9sas/mongodb-backup:latest
 fi
