@@ -17,6 +17,7 @@ func (scheduler *Scheduler) runBackup() {
 	mongoDBDump, err := mongodb.CreateDump(scheduler.Plan)
 	if err != nil {
 		log.Errorf("Error creating dump for %s", scheduler.Plan.Name)
+		scheduler.incBackupMetric("error")
 		return
 	}
 
@@ -24,10 +25,14 @@ func (scheduler *Scheduler) runBackup() {
 	err1 := scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
 
 	if err0 != nil || err1 != nil {
-		scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, "error").Inc()
+		scheduler.incBackupMetric("error")
 	} else {
-		scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, "success").Inc()
+		scheduler.incBackupMetric("success")
 	}
+}
+
+func (scheduler *Scheduler) incBackupMetric(status string) {
+	scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, status).Inc()
 }
 
 func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) error {
