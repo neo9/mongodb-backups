@@ -19,6 +19,7 @@ func init() {
 type MongoDBDump struct {
     ArchiveFile string
     LogFile string
+    Duration float64
 }
 
 func CreateDump(plan *config.Plan) (MongoDBDump, error) {
@@ -42,9 +43,11 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 		return mongoDBDump, err
 	}
 
+	startTime := time.Now()
 	output, err := sh.Command("/bin/sh", "-c", dumpCommand).
 		SetTimeout(duration).
 		CombinedOutput()
+	mongoDBDump.Duration = time.Since(startTime).Seconds()
 
 
 	if err != nil {

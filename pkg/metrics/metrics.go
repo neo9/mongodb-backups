@@ -3,8 +3,9 @@ package metrics
 import "github.com/prometheus/client_golang/prometheus"
 
 type BackupMetrics struct {
-	Total   *prometheus.CounterVec
-	Size    *prometheus.GaugeVec
+	Total     *prometheus.CounterVec
+	Size      *prometheus.GaugeVec
+	Duration  *prometheus.HistogramVec
 }
 
 func New(namespace string, subsystem string) *BackupMetrics {
@@ -27,11 +28,22 @@ func New(namespace string, subsystem string) *BackupMetrics {
 			Name:      "backup_size",
 			Help:      "The size of backup.",
 		},
-		[]string{"name", "status"},
+		[]string{"name"},
+	)
+
+	prom.Duration = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "backup_duration",
+			Help:      "The duration of backup.",
+		},
+		[]string{"name"},
 	)
 
 	prometheus.MustRegister(prom.Total)
 	prometheus.MustRegister(prom.Size)
+	prometheus.MustRegister(prom.Duration)
 
 	return prom
 }

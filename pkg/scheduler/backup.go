@@ -21,6 +21,8 @@ func (scheduler *Scheduler) runBackup() {
 		return
 	}
 
+	scheduler.addDurationMetric(mongoDBDump.Duration)
+
 	err0 := scheduler.uploadToS3(mongoDBDump.ArchiveFile, scheduler.Plan.Name)
 	err1 := scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
 
@@ -33,6 +35,20 @@ func (scheduler *Scheduler) runBackup() {
 
 func (scheduler *Scheduler) incBackupMetric(status string) {
 	scheduler.Metrics.Total.WithLabelValues(scheduler.Plan.Name, status).Inc()
+}
+
+func (scheduler *Scheduler) addDurationMetric(duration float64) {
+	scheduler.Metrics.Duration.WithLabelValues(scheduler.Plan.Name).Observe(duration)
+}
+
+func (scheduler *Scheduler) addSizeMetricFromBackup(filename string) {
+	file, err := os.Stat(filename)
+	if err != nil {
+		log.Errorf("Error computing file size for %s: %v", filename, err)
+		return
+	}
+
+	scheduler.Metrics.Size.WithLabelValues(scheduler.Plan.Name).Add(float64(file.Size()))
 }
 
 func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) error {
