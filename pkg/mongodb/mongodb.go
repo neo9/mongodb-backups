@@ -48,7 +48,7 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 
 
 	if err != nil {
-		log.Errorf("Error creating dump: %v", err)
+		log.Errorf("Error creating dump: %v, %s", err, output)
 		removeFile(mongoDBDump.ArchiveFile)
 		return mongoDBDump, err
 	}
