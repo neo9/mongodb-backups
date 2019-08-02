@@ -22,6 +22,7 @@ func (scheduler *Scheduler) runBackup() {
 	}
 
 	scheduler.addDurationMetric(mongoDBDump.Duration)
+	scheduler.addSizeMetricFromBackup(mongoDBDump.ArchiveFile)
 
 	err0 := scheduler.uploadToS3(mongoDBDump.ArchiveFile, scheduler.Plan.Name)
 	err1 := scheduler.uploadToS3(mongoDBDump.LogFile, scheduler.Plan.Name)
