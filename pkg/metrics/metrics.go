@@ -4,6 +4,7 @@ import "github.com/prometheus/client_golang/prometheus"
 
 type BackupMetrics struct {
 	Total     *prometheus.CounterVec
+	RetentionTotal     *prometheus.CounterVec
 	Size      *prometheus.GaugeVec
 	Duration  *prometheus.HistogramVec
 }
@@ -17,6 +18,16 @@ func New(namespace string, subsystem string) *BackupMetrics {
 			Subsystem: subsystem,
 			Name:      "backup_total",
 			Help:      "The total number of backups.",
+		},
+		[]string{"name", "status"},
+	)
+
+	prom.RetentionTotal = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "retention_total",
+			Help:      "The total number of retention removal.",
 		},
 		[]string{"name", "status"},
 	)
@@ -42,6 +53,7 @@ func New(namespace string, subsystem string) *BackupMetrics {
 	)
 
 	prometheus.MustRegister(prom.Total)
+	prometheus.MustRegister(prom.RetentionTotal)
 	prometheus.MustRegister(prom.Size)
 	prometheus.MustRegister(prom.Duration)
 
