@@ -51,7 +51,6 @@ func (scheduler *Scheduler) Run() {
 
 	scheduler.Cron.Start()
 	scheduler.displaySchedule()
-	scheduler.deleteOldBackups()
 }
 
 func (scheduler *Scheduler) displaySchedule() {
