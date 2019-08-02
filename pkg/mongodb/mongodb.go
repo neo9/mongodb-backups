@@ -49,12 +49,24 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 
 	if err != nil {
 		log.Errorf("Error creating dump: %v", err)
+		removeFile(mongoDBDump.ArchiveFile)
 		return mongoDBDump, err
 	}
 
 	log.Infof("Done creating dump for %s", plan.Name)
+	err = logToFile(mongoDBDump.LogFile, output)
+	if err != nil {
+		removeFile(mongoDBDump.ArchiveFile)
+	}
 
-	return mongoDBDump, logToFile(mongoDBDump.LogFile, output)
+	return mongoDBDump, err
+}
+
+func removeFile(filename string) {
+	err := os.Remove(filename)
+	if err != nil {
+		log.Errorf("Cannot delete temporary file %s: %v", filename, err)
+	}
 }
 
 func getDumpName() string {
