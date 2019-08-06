@@ -9,6 +9,7 @@ import (
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	log "github.com/sirupsen/logrus"
 	"runtime"
+	"strconv"
 )
 
 func init() {
@@ -24,6 +25,7 @@ func printVersion() {
 func main() {
 	printVersion()
 	confPath := flag.String("config", "./config.yaml", "Plan config path")
+	portStr := flag.String("port", "8080", "Server port")
 	flag.Parse()
 	log.Infof("Parsing configuration file: %s", *confPath)
 
@@ -33,11 +35,16 @@ func main() {
 		panic(err)
 	}
 
+	port, err := strconv.Atoi(*portStr)
+	if err != nil {
+		panic(fmt.Sprintf("Invalid server port %s: %v", portStr, err))
+	}
+
 	backupScheduler := scheduler.New(&plan)
 	backupScheduler.Run()
 
 	server := &api.HttpServer{
-		Port: 8080,
+		Port: int32(port),
 	}
 	log.Infof("starting http server on port %v", server.Port)
 	server.Start()
