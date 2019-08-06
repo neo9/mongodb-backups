@@ -7,6 +7,7 @@ import (
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -74,7 +75,7 @@ func (bucket *S3Bucket) ListFiles(destFolder string) ([]S3File, error) {
 		for _, obj := range p.Contents {
 			files = append(files, S3File{
 				Name: *obj.Key,
-				Etag: *obj.ETag,
+				Etag: strings.ReplaceAll(*obj.ETag, "\"", ""),
 				Size: *obj.Size,
 			})
 		}
