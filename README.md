@@ -3,17 +3,36 @@
 [![Build Status](https://travis-ci.org/neo9/mongodb-backups.svg?branch=master)](https://travis-ci.org/neo9/mongodb-backups)
 
 
-Backup MongoDB dumps to S3 or GCS.
+Create MongoDB snapshots to an encrypted S3 bucket.
+Handle snapshot restoration from backup.
+Can be easily monitored by Prometheus.
+
+[Docker repository](https://hub.docker.com/r/neo9sas/mongodb-backups)
 
 ## Usage
 
 ```bash
-./mongobackup --config ./config.yaml
+# Launch server & scheduler
+./mongodb-backups --config ./config.yaml
+# List backup
+./mongodb-backups --config ./config.yaml --list
+# Restore specific backup
+./mongodb-backups --config ./config.yaml --restore [id] --args '--drop'
+# Restore last backup
+./mongodb-backups --config ./config.yaml --restore-last --args '--drop'
 ```
+
+Parameters:
+
+- `--config`: Config path. Default `./config.yaml`
+- `--list`: list backups
+- `--restore`: Restore specific backup from snapshot
+- `--restore-last`: Restore last backup from snaphost
+- `--args`: MongoDB restore additional arguments
 
 ## TODO
 
-- Prometheus metrics and alerting
+- Prometheus alerts example
 
 ## Config file
 

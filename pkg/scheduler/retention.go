@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	log "github.com/sirupsen/logrus"
-	"regexp"
-	"strconv"
 	"time"
 )
 
@@ -29,29 +27,21 @@ func (scheduler *Scheduler) deleteOldBackups() {
     var removeFiles []string
 
     for i := 0; i < len(files); i++ {
-    	log.Debugf("File: ", files[i])
-
-    	reg := regexp.MustCompile(`mongodb-snapshot-(?P<Time>\d+)\.(gz|log)`)
-    	match := reg.FindStringSubmatch(files[i])
-    	if len(match) != 3 {
-			scheduler.incRetentionMetricError(fmt.Sprintf(
-				"File does not match pattern in folder %s: %s", scheduler.Plan.Name, files[i]))
-		}
-
-        timestamp, err := strconv.ParseInt(match[1], 10, 64)
-        if err != nil {
-			scheduler.incRetentionMetricError(fmt.Sprintf(
-				"File has invalid timestamp in folder %s: %s", scheduler.Plan.Name, files[i]))
+    	file := files[i]
+    	log.Debugf("File: ", file.Name)
+    	timestamp, err := utils.GetBucketFileTimestamp(file.Name)
+    	if err != nil {
+			scheduler.incRetentionMetricError(fmt.Sprintf("Could not apply retention: %v", err))
 		}
 
         ageInSeconds := time.Now().Unix() - timestamp
         diffInSeconds := ageInSeconds - int64(retentionDuration.Seconds())
 
         if diffInSeconds > 0 {
-			log.Debugf("File is %s old and schedule for removal", files[i])
-        	removeFiles = append(removeFiles, files[i])
+			log.Debugf("File is %s old and schedule for removal", file.Name)
+        	removeFiles = append(removeFiles, file.Name)
 		} else {
-			log.Debugf("File is %s old and will be removed in %s", files[i],
+			log.Debugf("File is %s old and will be removed in %s", file.Name,
 				time.Duration(diffInSeconds * -1) * time.Second)
 		}
 	}
