@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/utils"
 	"os"
 	"path"
 	"strings"
@@ -17,6 +18,7 @@ import (
 type Bucket interface {
 	Upload(filename string, destFolder string) error
 	ListFiles(destFolder string) ([]S3File, error)
+	DownloadFile(src string) (string, error)
 	DeleteFile(filename string) error
 }
 
@@ -87,6 +89,39 @@ func (bucket *S3Bucket) ListFiles(destFolder string) ([]S3File, error) {
 	}
 
 	return files, nil
+}
+
+func (bucket *S3Bucket) DownloadFile(src string) (string, error) {
+	svc := s3.New(bucket.Session)
+	downloader := s3manager.NewDownloader(bucket.Session)
+
+	size, err := getFileSize(svc, bucket.S3.Name, src)
+	if err != nil {
+		return "", err
+	}
+
+	filename := path.Join("/tmp", path.Base(src))
+	file, err := os.Create(filename)
+	defer file.Close()
+
+	writer := &progressWriter{
+		writer: file,
+		size: size,
+		humanSize: utils.GetHumanBytes(size),
+		written: 0,
+	}
+	params := &s3.GetObjectInput{
+		Bucket: aws.String(bucket.S3.Name),
+		Key:    aws.String(src),
+	}
+
+	_, err = downloader.Download(writer, params)
+	if err != nil {
+		_ = os.Remove(filename)
+		return "", err
+	}
+
+	return filename, nil
 }
 
 func (bucket *S3Bucket) DeleteFile(filename string) error {

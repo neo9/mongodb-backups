@@ -36,9 +36,17 @@ func listBackups(confPath string) {
 	}
 }
 
-func restoreBackup(confPath string, restoreID string) {
+func restoreBackup(confPath string, restoreID string, args string) {
 	backupScheduler := getScheduler(confPath)
-	err := restore.Restore(backupScheduler, restoreID)
+	err := restore.Restore(backupScheduler, restoreID, args)
+	if err != nil {
+		os.Exit(1)
+	}
+}
+
+func restoreLastBackup(confPath string, args string) {
+	backupScheduler := getScheduler(confPath)
+	err := restore.RestoreLast(backupScheduler, args)
 	if err != nil {
 		os.Exit(1)
 	}
@@ -62,14 +70,19 @@ func main() {
 	port := flag.Int("port", 8080, "Server port")
 	list := flag.Bool("list", false, "List backups")
 	restoreID := flag.String("restore", "", "Restore specific backup")
+	restoreLast := flag.Bool("restore-last", false, "Restore last backup")
+	args := flag.String("args", "", "MongoDB args")
 
 	flag.Parse()
 	if *list {
 		log.SetFormatter(&log.TextFormatter{})
 		listBackups(*confPath)
+	} else if *restoreLast {
+		log.SetFormatter(&log.TextFormatter{})
+		restoreLastBackup(*confPath, *args)
 	} else if *restoreID != "" {
 		log.SetFormatter(&log.TextFormatter{})
-		restoreBackup(*confPath, *restoreID)
+		restoreBackup(*confPath, *restoreID, *args)
 	} else {
 		launchServer(*confPath, int32(*port))
 		log.SetFormatter(&log.JSONFormatter{})

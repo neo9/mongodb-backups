@@ -4,9 +4,12 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/neo9/mongodb-backups/pkg/bucket"
+	"github.com/neo9/mongodb-backups/pkg/mongodb"
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	log "github.com/sirupsen/logrus"
+	"os"
+	"path"
 	"strings"
 	"time"
 )
@@ -24,11 +27,7 @@ func DisplayBackups(scheduler *scheduler.Scheduler) error {
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
-		if strings.Contains(file.Name, ".log") {
-			continue
-		}
-
-		timestamp, err := utils.GetBucketFileTimestamp(file.Name)
+		timestamp, err := utils.GetBucketFileTimestamp(path.Base(file.Name))
 		if err != nil {
 			log.Errorf("Could not parse file: %v", err)
 			continue
@@ -43,7 +42,23 @@ func DisplayBackups(scheduler *scheduler.Scheduler) error {
 	return nil
 }
 
-func Restore(scheduler *scheduler.Scheduler, restoreID string) error {
+func RestoreLast(scheduler *scheduler.Scheduler, args string) error {
+	files, err := getFiles(scheduler)
+	if err != nil {
+		return err
+	}
+
+	if len(files) == 0 {
+		log.Error("No backup found")
+		return errors.New("NO_BACKUP")
+	}
+
+	file := files[len(files) - 1]
+	log.Infof("Restoring backup %s from snapshot %s", file.Etag, file.Name)
+	return restoreBackup(scheduler, file.Name, args)
+}
+
+func Restore(scheduler *scheduler.Scheduler, restoreID string, args string) error {
 	files, err := getFiles(scheduler)
 	if err != nil {
 		return err
@@ -63,17 +78,21 @@ func Restore(scheduler *scheduler.Scheduler, restoreID string) error {
 	}
 
 	log.Infof("Restoring backup %s from snapshot %s", restoreID, file.Name)
-
-	return nil
+	return restoreBackup(scheduler, file.Name, args)
 }
 
-func downloadBackup(s3Path string) error {
-	// TODO: download S3 file
+func restoreBackup(scheduler *scheduler.Scheduler, src string, args string) error {
+	log.Info("Download snapshot")
+	file, err := scheduler.Bucket.DownloadFile(src)
+	if err != nil {
+		log.Errorf("Could not download snapshot: %v", err)
+		_ = os.Remove(file)
+		return err
+	}
 
-	// Apply default host
-
-	// DELETE tmp
-	return nil
+	err = mongodb.RestoreDump(file, args, 15 * 60)
+	_ = os.Remove(file)
+	return err
 }
 
 func getFiles(scheduler *scheduler.Scheduler) ([]bucket.S3File, error) {
@@ -83,6 +102,13 @@ func getFiles(scheduler *scheduler.Scheduler) ([]bucket.S3File, error) {
 		return []bucket.S3File{}, err
 	}
 
-	return files, nil
+	var dumpFiles []bucket.S3File
+	for i := 0; i < len(files); i++ {
+		if strings.Contains(files[i].Name, ".gz") {
+			dumpFiles = append(dumpFiles, files[i])
+		}
+	}
+
+	return dumpFiles, nil
 }
 
