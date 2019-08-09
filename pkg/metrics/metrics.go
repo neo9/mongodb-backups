@@ -8,6 +8,7 @@ type BackupMetrics struct {
 	BucketCount  *prometheus.GaugeVec
 	Size      *prometheus.GaugeVec
 	Latency  *prometheus.SummaryVec
+	LastSuccessfulSnapshot *prometheus.GaugeVec
 }
 
 func New(namespace string, subsystem string) *BackupMetrics {
@@ -63,11 +64,22 @@ func New(namespace string, subsystem string) *BackupMetrics {
 		[]string{"name"},
 	)
 
+	prom.LastSuccessfulSnapshot = prometheus.NewGaugeVec(
+		prometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: subsystem,
+			Name:      "last_successful_snapshot",
+			Help:      "The size of backup.",
+		},
+		[]string{"name"},
+	)
+
 	prometheus.MustRegister(prom.Total)
 	prometheus.MustRegister(prom.RetentionTotal)
 	prometheus.MustRegister(prom.BucketCount)
 	prometheus.MustRegister(prom.Size)
 	prometheus.MustRegister(prom.Latency)
+	prometheus.MustRegister(prom.LastSuccessfulSnapshot)
 
 	return prom
 }

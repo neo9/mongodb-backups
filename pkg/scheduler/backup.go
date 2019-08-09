@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"os"
 	"path"
+	"time"
 )
 
 func init() {
@@ -31,6 +32,8 @@ func (scheduler *Scheduler) runBackup() {
 		scheduler.incBackupMetric("error")
 	} else {
 		scheduler.incBackupMetric("success")
+		timestamp := float64(time.Now().Unix())
+		scheduler.Metrics.LastSuccessfulSnapshot.WithLabelValues(scheduler.Plan.Name).Set(timestamp)
 	}
 }
 
