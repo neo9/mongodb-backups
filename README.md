@@ -33,14 +33,32 @@ Parameters:
 ## Config file
 
 - `name`: backup name
-- `schedule`: cronJob schedule. Example: `0 * * * *`
+- `schedule`: cronjob schedule. Example: `0 * * * *`
+- `retention`: max retention. Example: `2d`, `1w`, `1M`, `720h`
+- `timeout`: mongodb dump timeout
 - `mongodb`:
     - `host`: MongoDB host
     - `port`: MongoDB port
-- `bucket`: dictionary
+- `bucket`:
     - `s3`:
         - `name`: bucket name
         - `region`: bucket region
+
+Example:
+
+```yaml
+name: integration
+retention: 1w
+schedule: '0 0 * * *'
+timeout: 15m
+mongodb:
+  host: localhost
+  port: 27017
+bucket:
+  s3:
+    name: bucket-name
+    region: eu-west-1
+```
 
 ## Prometheus metrics
 
