@@ -30,10 +30,6 @@ Parameters:
 - `--restore-last`: Restore last backup from snaphost
 - `--args`: MongoDB restore additional arguments
 
-## TODO
-
-- Prometheus alerts example
-
 ## Config file
 
 - `name`: backup name
@@ -46,6 +42,15 @@ Parameters:
         - `name`: bucket name
         - `region`: bucket region
 
+## Prometheus metrics
+
+- `mongodb_backups_scheduler_backup_total`: Total number of backups (status: success / error)
+- `mongodb_backups_scheduler_retention_total`: Total number of successful retention cleanup (status: success / error)
+- `mongodb_backups_scheduler_bucket_snapshot_count`: Current number of snapshots in the bucket
+- `mongodb_backups_scheduler_snapshot_size`: Last snapshot size in bytes
+- `mongodb_backups_scheduler_snapshot_latency`: Last snapshot duration in seconds
+
+All metrics have the label `name` equals to the config `name` key.
 
 ## Environment variables
 

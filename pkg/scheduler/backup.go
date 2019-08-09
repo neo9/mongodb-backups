@@ -39,7 +39,7 @@ func (scheduler *Scheduler) incBackupMetric(status string) {
 }
 
 func (scheduler *Scheduler) addDurationMetric(duration float64) {
-	scheduler.Metrics.Duration.WithLabelValues(scheduler.Plan.Name).Observe(duration)
+	scheduler.Metrics.Latency.WithLabelValues(scheduler.Plan.Name).Observe(duration)
 }
 
 func (scheduler *Scheduler) addSizeMetricFromBackup(filename string) {

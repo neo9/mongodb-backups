@@ -52,12 +52,13 @@ func (scheduler *Scheduler) deleteOldBackups() {
     for i := 0; i < len(removeFiles); i++ {
     	err := scheduler.Bucket.DeleteFile(removeFiles[i])
     	if err != nil {
-    		log.Errorf("Could not remove file %s", removeFiles[i])
+			scheduler.incRetentionMetricError(fmt.Sprintf("Could not remove file %s", removeFiles[i]))
             status = "error"
 		}
 	}
 
-
+    snapshotCount := float64(len(files) / 2 - len(removeFiles))
+	scheduler.Metrics.BucketCount.WithLabelValues(scheduler.Plan.Name).Set(snapshotCount)
 	scheduler.Metrics.RetentionTotal.WithLabelValues(scheduler.Plan.Name, status).Inc()
 }
 
