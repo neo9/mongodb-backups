@@ -2,18 +2,36 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mongodb-backups
+  labels:
+    app: mongodb-backups
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: mongodb-backups
+      app: mongodb-backups
   template:
     metadata:
       labels:
-        name: mongodb-backups
+        app: mongodb-backups
     spec:
       containers:
-        - name: backup
-          # Do not use latest and check for latest release tag
-          image: neo9sas/mongodb-backups:latest
-          imagePullPolicy: Always
+        - name: mongodb-backups
+          image: neo9sas/mongodb-backups:$RELEASE_VERSION
+          command:
+            - /bin/mongodb-backups
+            - --config
+            - /etc/config/config.yaml
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+          resources:
+            limits:
+              memory: 500M
+            requests:
+              memory: 500M
+              cpu: 10m
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mongodb-backups
+
