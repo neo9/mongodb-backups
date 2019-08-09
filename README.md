@@ -69,6 +69,7 @@ bucket:
 - `mongodb_backups_scheduler_bucket_snapshot_count`: Current number of snapshots in the bucket
 - `mongodb_backups_scheduler_snapshot_size`: Last snapshot size in bytes
 - `mongodb_backups_scheduler_snapshot_latency`: Last snapshot duration in seconds
+- `mongodb_backups_scheduler_last_successful_snaphot`: Last successful snapshot timestamp
 
 All metrics have the label `name` equals to the config `name` key.
 
