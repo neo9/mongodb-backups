@@ -57,6 +57,32 @@ All metrics have the label `name` equals to the config `name` key.
 - `MONGODB_USER`: MongoDB user
 - `MONGODB_PASSWORD`: MongoDB password
 
+## AWS
+
+S3 policy example:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "0",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-bucket-name",
+        "arn:aws:s3:::my-bucket-name/*"
+      ]
+    }
+  ]
+}
+```
+
 ## Development
 
 ### Run
