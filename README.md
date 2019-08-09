@@ -20,6 +20,8 @@ Can be easily monitored by Prometheus.
 ./mongodb-backups --config ./config.yaml --restore [id] --args '--drop'
 # Restore last backup
 ./mongodb-backups --config ./config.yaml --restore-last --args '--drop'
+# Arbitrary dump
+./mongodb-backups --config ./config.yaml --dump
 ```
 
 Parameters:

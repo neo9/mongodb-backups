@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -20,4 +21,12 @@ func GetBucketFileTimestamp(file string) (int64, error) {
 	}
 
 	return timestamp, nil
+}
+
+func GetHumanFileSize(filename string) string {
+	stat, err := os.Stat(filename)
+	if err != nil {
+		return "UNKNOWN"
+	}
+	return GetHumanBytes(stat.Size())
 }
