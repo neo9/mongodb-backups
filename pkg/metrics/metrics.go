@@ -40,7 +40,7 @@ func New(namespace string, subsystem string) *BackupMetrics {
 			Name:      "bucket_snapshot_count",
 			Help:      "The total number of snapshots stored in bucket.",
 		},
-		[]string{"name", "status"},
+		[]string{"name"},
 	)
 
 	prom.Size = prometheus.NewGaugeVec(
