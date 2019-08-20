@@ -1,0 +1,25 @@
+groups:
+  - name: Backups
+    rules:
+      - alert: MongoDBBackupNotRunningIn24Hours
+        expr: '(time() - max(mongodb_backups_scheduler_last_successful_snapshot)) / 60 / 60 > 24'
+        for: 1m
+        labels:
+          severity: P3
+        annotations:
+          message: MongoDB backups on {{ $labels.instance }}, for snapshot {{ $labels.name }} has not ran in the last 24H
+      - alert: MongoDBBackupError
+        expr: 'mongodb_backups_scheduler_backup_total{status="error"} > 1'
+        for: 30s
+        labels:
+          severity: P3
+        annotations:
+          message: MongoDB backups on {{ $labels.instance }}, for snapshot {{ $labels.name }} has errors
+      - alert: MongoDBBackupRetentionError
+        expr: 'mongodb_backups_scheduler_retention_total{status="error"} > 1'
+        for: 30s
+        labels:
+          severity: P3
+        annotations:
+          message: MongoDB retention removal on {{ $labels.instance }} for {{ $labels.name }} has errors
+

@@ -1,0 +1,3 @@
+# Prometheus alerting
+
+Alerts example
