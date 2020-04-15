@@ -26,9 +26,9 @@ spec:
               mountPath: /etc/config
           resources:
             limits:
-              memory: 500M
+              memory: 1Gi
             requests:
-              memory: 500M
+              memory: 1Gi
               cpu: 10m
       volumes:
         - name: config-volume
