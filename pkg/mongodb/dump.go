@@ -62,4 +62,3 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 func getDumpName() string {
 	return fmt.Sprintf("mongodb-snapshot-%d", time.Now().Unix())
 }
-
