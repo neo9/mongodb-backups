@@ -65,8 +65,8 @@ func arbitraryDump(confPath string) {
 
 	uploadDumpFile(mongoDBDump.ArchiveFile, backupScheduler)
 	uploadDumpFile(mongoDBDump.LogFile, backupScheduler)
-	removeFile(mongoDBDump.ArchiveFile)
-	removeFile(mongoDBDump.LogFile)
+	mongodb.RemoveFile(mongoDBDump.ArchiveFile)
+	mongodb.RemoveFile(mongoDBDump.LogFile)
 	log.Infof("Dump successful")
 }
 
