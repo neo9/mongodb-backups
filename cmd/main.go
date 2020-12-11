@@ -72,7 +72,7 @@ func uploadDumpFile(filename string, scheduler *scheduler.Scheduler) {
 	log.Infof("Upload file %s. Size: %s", filename, utils.GetHumanFileSize(filename))
 	err := scheduler.Bucket.Upload(filename, scheduler.Plan.Name)
 	if err != nil {
-		log.Errorf("Could not upload log file: %v", err)
+		log.Errorf("Could not upload file: %v", err)
 		os.Exit(1)
 	}
 }

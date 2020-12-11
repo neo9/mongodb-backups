@@ -14,14 +14,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-
-type Bucket interface {
-	Upload(filename string, destFolder string) error
-	ListFiles(destFolder string) ([]S3File, error)
-	DownloadFile(src string) (string, error)
-	DeleteFile(filename string) error
-}
-
 type S3Bucket struct {
 	Session *session.Session
 	S3 *config.S3
@@ -33,7 +25,7 @@ type S3File struct {
 	Size int64
 }
 
-func New(s3 *config.S3) *S3Bucket {
+func NewS3Bucket(s3 *config.S3) *S3Bucket {
 	s3Session := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String(s3.Region),
 	}))

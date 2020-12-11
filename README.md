@@ -41,11 +41,13 @@ Parameters:
 - `mongodb`:
     - `host`: MongoDB host
     - `port`: MongoDB port
-- `bucket`:
+- `bucket` (fill only one option):
     - `s3`:
         - `name`: bucket name
         - `region`: bucket region
-
+  - `gs`:
+      - `name`: bucket name
+    
 Example:
 
 ```yaml

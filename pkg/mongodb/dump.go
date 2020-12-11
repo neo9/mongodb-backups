@@ -54,7 +54,6 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 
 	log.Infof("Done creating dump for %s", plan.Name)
 	err = logToFile(mongoDBDump.LogFile, output)
-	removeFile(mongoDBDump.ArchiveFile)
 
 	return mongoDBDump, err
 }
