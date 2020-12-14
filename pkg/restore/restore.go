@@ -90,7 +90,7 @@ func restoreBackup(scheduler *scheduler.Scheduler, src string, args string) erro
 		return err
 	}
 
-	err = mongodb.RestoreDump(file, args, 15 * 60)
+	err = mongodb.RestoreDump(file, args, scheduler.Plan)
 	_ = os.Remove(file)
 	return err
 }
