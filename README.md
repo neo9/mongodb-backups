@@ -47,7 +47,7 @@ Parameters:
         - `region`: bucket region
   - `gs`:
       - `name`: bucket name
-    
+
 Example:
 
 ```yaml
@@ -62,6 +62,14 @@ bucket:
   s3:
     name: bucket-name
     region: eu-west-1
+```
+
+Example of instant backup start :
+
+```yaml
+kubectl apply -f ./k8s/backup.yaml
+# then watch status
+watch kubectl -n tools get jobs
 ```
 
 ## Prometheus metrics
