@@ -12,7 +12,7 @@ func init() {
 }
 
 
-func removeFile(filename string) {
+func RemoveFile(filename string) {
 	err := os.Remove(filename)
 	if err != nil {
 		log.Errorf("Cannot delete temporary file %s: %v", filename, err)
