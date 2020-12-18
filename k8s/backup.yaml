@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-backup-job
+  namespace: tools
+  labels:
+    app: mongodb-backups
+spec:
+  activeDeadlineSeconds: 14400
+  ttlSecondsAfterFinished: 7200
+  backoffLimit: 0
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: mongodb-backup
+        image: neo9sas/mongodb-backups:$RELEASE_VERSION
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/mongodb-backups
+          - --config
+          - /etc/config/config.yaml
+          - --dump
+        volumeMounts:
+          - name: config-volume
+            mountPath: /etc/config
+          - name: gs-auth-volume
+            mountPath: /etc/config-creds
+            readOnly: true
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/config-creds/mongo-backup-sa.json
+          - name: MONGODB_USER
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_USER
+                name: mongodb-backups
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_PASSWORD
+                name: mongodb-backups
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            memory: 1Gi
+            cpu: 500m
+      volumes:
+        - name: config-volume
+          configMap:
+            name: mongodb-backups
+        - name: gs-auth-volume
+          secret:
+            secretName: mongodb-backups
+            items:
+            - key: GOOGLE_SERVICE_ACCOUNT_JSON
+              path: mongo-backup-sa.json

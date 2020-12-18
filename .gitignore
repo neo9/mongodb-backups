@@ -6,3 +6,4 @@ config.yml
 .env
 mongodb-backups
 vendor
+keys/

@@ -41,10 +41,12 @@ Parameters:
 - `mongodb`:
     - `host`: MongoDB host
     - `port`: MongoDB port
-- `bucket`:
+- `bucket` (fill only one option):
     - `s3`:
         - `name`: bucket name
         - `region`: bucket region
+  - `gs`:
+      - `name`: bucket name
 
 Example:
 
@@ -60,6 +62,14 @@ bucket:
   s3:
     name: bucket-name
     region: eu-west-1
+```
+
+Example of instant backup start :
+
+```yaml
+kubectl apply -f ./k8s/backup.yaml
+# then watch status
+watch kubectl -n tools get jobs
 ```
 
 ## Prometheus metrics

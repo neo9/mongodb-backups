@@ -21,12 +21,12 @@ func init() {
 }
 
 func New(plan *config.Plan) *Scheduler {
-	S3Bucket := bucket.New(&plan.Bucket.S3)
+	Bucket := bucket.New(&plan.Bucket)
 
 	return &Scheduler{
 		Plan: plan,
 		Cron: cron.New(),
-		Bucket: S3Bucket,
+		Bucket: Bucket,
 		Metrics: metrics.New("mongodb_backups", "scheduler"),
 	}
 }
