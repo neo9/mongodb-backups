@@ -2,18 +2,20 @@ package config
 
 import (
 	"errors"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Plan struct {
-	Name string `json:"name"`
-	Schedule string `json:"schedule"`
-	Retention string `json:"retention"`
-	Timeout string `json:"timeout"`
-	MongoDB MongoDB `json:"mongodb"`
-	Bucket Bucket `json:"buckets"`
+	Name      string  `json:"name"`
+	Schedule  string  `json:"schedule"`
+	Retention string  `json:"retention"`
+	Timeout   string  `json:"timeout"`
+	TmpPath   string  `json:"tmpPath"`
+	MongoDB   MongoDB `json:"mongodb"`
+	Bucket    Bucket  `json:"buckets"`
 }
 
 type Bucket struct {
@@ -22,7 +24,7 @@ type Bucket struct {
 }
 
 type S3 struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
 	Region string `json:"region"`
 }
 type GS struct {
@@ -33,8 +35,6 @@ type MongoDB struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
 }
-
-
 
 func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 	_, err := os.Stat(filename)
