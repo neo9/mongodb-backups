@@ -38,6 +38,7 @@ Parameters:
 - `schedule`: cronjob schedule. Example: `0 * * * *`
 - `retention`: max retention. Example: `2d`, `1w`, `1M`, `720h`
 - `timeout`: mongodb dump timeout
+- `tmpPath`: path to store tempory backup before s3 upload
 - `mongodb`:
     - `host`: MongoDB host
     - `port`: MongoDB port
@@ -55,6 +56,7 @@ name: integration
 retention: 1w
 schedule: '0 0 * * *'
 timeout: 15m
+tmpPath: /tmp
 mongodb:
   host: localhost
   port: 27017

@@ -2,26 +2,27 @@ package mongodb
 
 import (
 	"fmt"
+	"path"
+	"time"
+
 	"github.com/codeskyblue/go-sh"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	"github.com/prometheus/common/log"
-	"path"
-	"time"
 )
 
 type MongoDBDump struct {
 	ArchiveFile string
-	LogFile string
-	Duration float64
+	LogFile     string
+	Duration    float64
 }
 
 func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 	dumpName := getDumpName()
-	outputFile := path.Join("/tmp", dumpName)
+	outputFile := path.Join(plan.TmpPath, dumpName)
 	mongoDBDump := MongoDBDump{
 		ArchiveFile: outputFile + ".gz",
-		LogFile: outputFile + ".log",
+		LogFile:     outputFile + ".log",
 	}
 
 	authArgs := getAuthenticationArguments()
@@ -44,7 +45,6 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 		CombinedOutput()
 	mongoDBDump.Duration = time.Since(startTime).Seconds()
 
-
 	if err != nil {
 		log.Errorf("Error creating dump: %v, %s", err, output)
 		log.Errorf("Dump timeout: %s", duration)
@@ -64,4 +64,3 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 func getDumpName() string {
 	return fmt.Sprintf("mongodb-snapshot-%d", time.Now().Unix())
 }
-

@@ -10,6 +10,7 @@ data:
     retention: 1w
     schedule: '0 0 * * *'
     timeout: 15m
+    tmpPath: /tmp
     mongodb:
       host: localhost
       port: 27017
