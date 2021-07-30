@@ -3,10 +3,11 @@ package utils
 import (
 	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -32,7 +33,7 @@ func GetDurationFromTimeString(timeStr string) (time.Duration, error) {
 		"m": 1,
 	}
 
-	duration := time.Duration(number * unitMap[unit]) * time.Minute
+	duration := time.Duration(number*unitMap[unit]) * time.Minute
 
 	return duration, nil
 }

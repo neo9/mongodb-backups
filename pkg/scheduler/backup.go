@@ -1,11 +1,12 @@
 package scheduler
 
 import (
-	"github.com/neo9/mongodb-backups/pkg/mongodb"
-	log "github.com/sirupsen/logrus"
 	"os"
 	"path"
 	"time"
+
+	"github.com/neo9/mongodb-backups/pkg/mongodb"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -72,4 +73,3 @@ func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) error
 
 	return nil
 }
-

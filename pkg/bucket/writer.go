@@ -2,17 +2,18 @@ package bucket
 
 import (
 	"fmt"
+	"io"
+	"sync/atomic"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/neo9/mongodb-backups/pkg/utils"
-	"io"
-	"sync/atomic"
 )
 
 type progressWriter struct {
-	written int64
-	writer  io.WriterAt
-	size    int64
+	written   int64
+	writer    io.WriterAt
+	size      int64
 	humanSize string
 }
 
@@ -39,4 +40,3 @@ func getFileSize(svc *s3.S3, bucket string, prefix string) (filesize int64, erro
 
 	return *resp.ContentLength, nil
 }
-

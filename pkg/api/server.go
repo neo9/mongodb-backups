@@ -14,7 +14,6 @@ func init() {
 	log.SetFormatter(&log.JSONFormatter{})
 }
 
-
 type HttpServer struct {
 	Port int32
 }
@@ -28,7 +27,6 @@ func metricsRouter() http.Handler {
 	return r
 }
 
-
 func (server *HttpServer) Start() {
 
 	r := chi.NewRouter()
@@ -38,4 +36,3 @@ func (server *HttpServer) Start() {
 
 	log.Error(http.ListenAndServe(fmt.Sprintf(":%v", server.Port), r))
 }
-
