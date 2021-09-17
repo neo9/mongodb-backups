@@ -27,7 +27,7 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 
 	authArgs := getAuthenticationArguments()
 	dumpCommand := fmt.Sprintf(
-		"mongodump --authenticationDatabase admin %s --archive=%v --gzip --host %s --port %s",
+		"mongodump --forceTableScan --authenticationDatabase admin %s --archive=%v --gzip --host %s --port %s",
 		authArgs,
 		mongoDBDump.ArchiveFile,
 		plan.MongoDB.Host,

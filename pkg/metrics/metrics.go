@@ -3,11 +3,11 @@ package metrics
 import "github.com/prometheus/client_golang/prometheus"
 
 type BackupMetrics struct {
-	Total     *prometheus.CounterVec
-	RetentionTotal     *prometheus.CounterVec
-	BucketCount  *prometheus.GaugeVec
-	Size      *prometheus.GaugeVec
-	Latency  *prometheus.SummaryVec
+	Total                  *prometheus.CounterVec
+	RetentionTotal         *prometheus.CounterVec
+	BucketCount            *prometheus.GaugeVec
+	Size                   *prometheus.GaugeVec
+	Latency                *prometheus.SummaryVec
 	LastSuccessfulSnapshot *prometheus.GaugeVec
 }
 

@@ -1,12 +1,12 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -17,8 +17,7 @@ func GetDurationFromTimeString(timeStr string) (time.Duration, error) {
 	reg := regexp.MustCompile(`(?P<Number>\d+)(?P<Unit>[Mwdhm])`)
 	match := reg.FindStringSubmatch(timeStr)
 	if len(match) != 3 {
-		return 0, errors.New(
-			fmt.Sprintf("Could not parse string: %s. Wrong time format. Example: 1h, 3w, 15d", timeStr))
+		return 0, fmt.Errorf("Could not parse string: " + timeStr + ". Wrong time format. Example: 1h, 3w, 15d")
 	}
 
 	number, _ := strconv.Atoi(match[1])
@@ -32,7 +31,7 @@ func GetDurationFromTimeString(timeStr string) (time.Duration, error) {
 		"m": 1,
 	}
 
-	duration := time.Duration(number * unitMap[unit]) * time.Minute
+	duration := time.Duration(number*unitMap[unit]) * time.Minute
 
 	return duration, nil
 }

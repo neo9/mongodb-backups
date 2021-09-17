@@ -2,11 +2,12 @@ package mongodb
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/codeskyblue/go-sh"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	"github.com/prometheus/common/log"
-	"time"
 )
 
 func RestoreDump(filename string, args string, plan *config.Plan) error {
