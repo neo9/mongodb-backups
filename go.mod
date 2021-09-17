@@ -12,16 +12,17 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/howeyc/gopass v0.0.0-20170109162249-bf9dde6d0d2c // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
+	github.com/minio/minio-go/v7 v7.0.13
 	github.com/mongodb/mongo-tools-common v0.0.0 // indirect
 	github.com/prometheus/client_golang v1.1.0
 	github.com/prometheus/common v0.6.0
 	github.com/robfig/cron v1.2.0
-	github.com/sirupsen/logrus v1.4.2
+	github.com/sirupsen/logrus v1.8.1
 	github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c // indirect
 	github.com/xdg/stringprep v1.0.0 // indirect
 	golang.org/x/arch v0.0.0-20190312162104-788fe5ffcd8c // indirect
 	google.golang.org/api v0.32.0
 	google.golang.org/appengine v1.6.6
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.4.0
 )
