@@ -64,19 +64,13 @@ func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 }
 
 func validate(plan *Plan) error {
-	if plan.Bucket.S3.Name != "" && plan.Bucket.GS.Name != "" && plan.Bucket.Minio.Name != "" {
-		return errors.New("error in configuration : should only have S3, GS or Minio bucket configured")
-	}
-
-	if plan.Bucket.S3.Name != "" && plan.Bucket.S3.Region != "" {
+	if plan.Bucket.S3.Name != "" && plan.Bucket.S3.Region != "" && plan.Bucket.GS.Name == "" && plan.Bucket.Minio.Name == "" {
 		return nil
-	}
-	if plan.Bucket.GS.Name != "" {
+	} else if plan.Bucket.GS.Name != "" && plan.Bucket.S3.Name == "" && plan.Bucket.Minio.Name == "" {
 		return nil
-	}
-	if plan.Bucket.Minio.Name != "" && plan.Bucket.Minio.Host != "" {
+	} else if plan.Bucket.Minio.Name != "" && plan.Bucket.Minio.Host != "" && plan.Bucket.S3.Name == "" && plan.Bucket.GS.Name == "" {
 		return nil
 	}
 
-	return errors.New("missing S3, Minio bucket name or region or GS bucket name")
+	return errors.New("error in configuration : should only have one type of bucket configured")
 }
