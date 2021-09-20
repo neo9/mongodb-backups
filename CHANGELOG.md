@@ -1,4 +1,26 @@
 
+<a name="v0.9.0"></a>
+## [v0.9.0](https://github.com/neo9/mongodb-backups/compare/v0.8.0...v0.9.0) (2021-09-20)
+
+### Bucket
+
+* Add minio support
+
+### Config
+
+* Fix bucket configuration check
+
+### Doc
+
+* Add changelog specifications
+* Add minio documentation
+* Add changelog
+
+### Fmt
+
+* Fix syntax
+
+
 <a name="v0.8.0"></a>
 ## [v0.8.0](https://github.com/neo9/mongodb-backups/compare/v0.7.0...v0.8.0) (2021-07-30)
 
