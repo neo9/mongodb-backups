@@ -2,6 +2,7 @@ package scheduler
 
 import (
 	"fmt"
+
 	"github.com/neo9/mongodb-backups/pkg/bucket"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"github.com/neo9/mongodb-backups/pkg/metrics"
@@ -10,9 +11,9 @@ import (
 )
 
 type Scheduler struct {
-	Cron *cron.Cron
-	Plan *config.Plan
-	Bucket bucket.Bucket
+	Cron    *cron.Cron
+	Plan    *config.Plan
+	Bucket  bucket.Bucket
 	Metrics *metrics.BackupMetrics
 }
 
@@ -24,13 +25,12 @@ func New(plan *config.Plan) *Scheduler {
 	Bucket := bucket.New(&plan.Bucket)
 
 	return &Scheduler{
-		Plan: plan,
-		Cron: cron.New(),
-		Bucket: Bucket,
+		Plan:    plan,
+		Cron:    cron.New(),
+		Bucket:  Bucket,
 		Metrics: metrics.New("mongodb_backups", "scheduler"),
 	}
 }
-
 
 func (scheduler *Scheduler) Run() {
 	err := scheduler.Cron.AddFunc(fmt.Sprintf("0 %s", scheduler.Plan.Schedule), func() {

@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+	"runtime"
+
 	"github.com/neo9/mongodb-backups/pkg/api"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"github.com/neo9/mongodb-backups/pkg/mongodb"
@@ -10,8 +13,6 @@ import (
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"runtime"
 )
 
 func printVersion() {
@@ -119,4 +120,3 @@ func main() {
 		log.SetFormatter(&log.JSONFormatter{})
 	}
 }
-

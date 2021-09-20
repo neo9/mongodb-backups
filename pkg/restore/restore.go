@@ -2,16 +2,17 @@ package restore
 
 import (
 	"errors"
+	"os"
+	"path"
+	"strings"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/neo9/mongodb-backups/pkg/bucket"
 	"github.com/neo9/mongodb-backups/pkg/mongodb"
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 	log "github.com/sirupsen/logrus"
-	"os"
-	"path"
-	"strings"
-	"time"
 )
 
 func DisplayBackups(scheduler *scheduler.Scheduler) error {
@@ -53,7 +54,7 @@ func RestoreLast(scheduler *scheduler.Scheduler, args string) error {
 		return errors.New("NO_BACKUP")
 	}
 
-	file := files[len(files) - 1]
+	file := files[len(files)-1]
 	log.Infof("Restoring backup %s from snapshot %s", file.Etag, file.Name)
 	return restoreBackup(scheduler, file.Name, args)
 }
@@ -111,4 +112,3 @@ func getFiles(scheduler *scheduler.Scheduler) ([]bucket.S3File, error) {
 
 	return dumpFiles, nil
 }
-

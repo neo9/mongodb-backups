@@ -2,15 +2,15 @@ package mongodb
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
 }
-
 
 func RemoveFile(filename string) {
 	err := os.Remove(filename)

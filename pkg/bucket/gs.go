@@ -3,12 +3,13 @@ package bucket
 import (
 	"context"
 	"fmt"
-	"github.com/neo9/mongodb-backups/pkg/config"
-	"google.golang.org/api/iterator"
 	"io"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/neo9/mongodb-backups/pkg/config"
+	"google.golang.org/api/iterator"
 
 	"cloud.google.com/go/storage"
 
@@ -70,10 +71,10 @@ func (bucket *GSBucket) ListFiles(destFolder string) ([]S3File, error) {
 			break
 		}
 		if err != nil {
-			fmt.Errorf("listBucket: unable to list bucket %q: %v", bucket.GS.Name, err)
+			_ = fmt.Errorf("listBucket: unable to list bucket %q: %v", bucket.GS.Name, err)
 			return []S3File{}, err
 		}
-		if destFolder == obj.Name || (destFolder + "/") == obj.Name {
+		if destFolder == obj.Name || (destFolder+"/") == obj.Name {
 			continue
 		}
 
@@ -99,6 +100,9 @@ func (bucket *GSBucket) DownloadFile(src string) (string, error) {
 
 	filename := path.Join("/tmp", path.Base(src))
 	file, err := os.Create(filename)
+	if err != nil {
+		return "", err
+	}
 	defer file.Close()
 
 	rc, err := bucketClient.Object(src).NewReader(ctx)

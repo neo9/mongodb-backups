@@ -16,10 +16,12 @@ func New(bucket *config.Bucket) Bucket {
 	if bucket.S3.Name != "" {
 		log.Infof("using s3 storage (%s)", bucket.S3.Name)
 		return NewS3Bucket(&bucket.S3)
-	}
-	if bucket.GS.Name != "" {
+	} else if bucket.GS.Name != "" {
 		log.Infof("using gs storage (%s)", bucket.GS.Name)
 		return NewGSBucket(&bucket.GS)
+	} else if bucket.Minio.Name != "" {
+		log.Infof("using Minio storage (%s)", bucket.Minio.Name)
+		return NewMinioBucket(&bucket.Minio)
 	}
 
 	panic("No implementations declared for bucket configuration")

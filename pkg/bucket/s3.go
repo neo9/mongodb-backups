@@ -2,13 +2,14 @@ package bucket
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"strings"
+
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/neo9/mongodb-backups/pkg/config"
 	"github.com/neo9/mongodb-backups/pkg/utils"
-	"os"
-	"path"
-	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,7 +17,7 @@ import (
 
 type S3Bucket struct {
 	Session *session.Session
-	S3 *config.S3
+	S3      *config.S3
 }
 
 type S3File struct {
@@ -32,10 +33,9 @@ func NewS3Bucket(s3 *config.S3) *S3Bucket {
 
 	return &S3Bucket{
 		Session: s3Session,
-		S3: s3,
+		S3:      s3,
 	}
 }
-
 
 func (bucket *S3Bucket) Upload(filename string, destFolder string) error {
 	uploader := s3manager.NewUploader(bucket.Session)
@@ -46,9 +46,9 @@ func (bucket *S3Bucket) Upload(filename string, destFolder string) error {
 	defer file.Close()
 
 	_, err = uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(bucket.S3.Name),
-		Key:    aws.String(path.Join(destFolder, path.Base(filename))),
-		Body:   file,
+		Bucket:               aws.String(bucket.S3.Name),
+		Key:                  aws.String(path.Join(destFolder, path.Base(filename))),
+		Body:                 file,
 		ServerSideEncryption: aws.String("AES256"),
 	})
 
@@ -56,10 +56,10 @@ func (bucket *S3Bucket) Upload(filename string, destFolder string) error {
 }
 
 func (bucket *S3Bucket) ListFiles(destFolder string) ([]S3File, error) {
-    svc := s3.New(bucket.Session)
+	svc := s3.New(bucket.Session)
 
 	var files []S3File
-    i := 0
+	i := 0
 	err := svc.ListObjectsPages(&s3.ListObjectsInput{
 		Bucket: &bucket.S3.Name,
 		Prefix: &destFolder,
@@ -94,13 +94,16 @@ func (bucket *S3Bucket) DownloadFile(src string) (string, error) {
 
 	filename := path.Join("/tmp", path.Base(src))
 	file, err := os.Create(filename)
+	if err != nil {
+		return "", err
+	}
 	defer file.Close()
 
 	writer := &progressWriter{
-		writer: file,
-		size: size,
+		writer:    file,
+		size:      size,
 		humanSize: utils.GetHumanBytes(size),
-		written: 0,
+		written:   0,
 	}
 	params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket.S3.Name),
@@ -120,7 +123,7 @@ func (bucket *S3Bucket) DeleteFile(filename string) error {
 	svc := s3.New(bucket.Session)
 	_, err := svc.DeleteObject(&s3.DeleteObjectInput{
 		Bucket: &bucket.S3.Name,
-		Key: aws.String("//" + filename),
+		Key:    aws.String("//" + filename),
 	})
 
 	return err

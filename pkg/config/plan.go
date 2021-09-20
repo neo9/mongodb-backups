@@ -19,8 +19,9 @@ type Plan struct {
 }
 
 type Bucket struct {
-	S3 S3 `json:"s3"`
-	GS GS `json:"gs"`
+	S3    S3    `json:"s3"`
+	GS    GS    `json:"gs"`
+	Minio Minio `json:"minio"`
 }
 
 type S3 struct {
@@ -29,6 +30,13 @@ type S3 struct {
 }
 type GS struct {
 	Name string `json:"name"`
+}
+
+type Minio struct {
+	Name   string `json:"name"`
+	Host   string `json:"host"`
+	Region string `json:"region,omitempty"`
+	SSL    bool   `json:"ssl,omitempty"`
 }
 
 type MongoDB struct {
@@ -56,16 +64,13 @@ func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 }
 
 func validate(plan *Plan) error {
-	if plan.Bucket.S3.Name != "" && plan.Bucket.GS.Name != "" {
-		return errors.New("error in configuration : should only have s3 OR gs bucket configured")
-	}
-
-	if plan.Bucket.S3.Name != "" && plan.Bucket.S3.Region != "" {
+	if plan.Bucket.S3.Name != "" && plan.Bucket.S3.Region != "" && plan.Bucket.GS.Name == "" && plan.Bucket.Minio.Name == "" {
 		return nil
-	}
-	if plan.Bucket.GS.Name != "" {
+	} else if plan.Bucket.GS.Name != "" && plan.Bucket.S3.Name == "" && plan.Bucket.Minio.Name == "" {
+		return nil
+	} else if plan.Bucket.Minio.Name != "" && plan.Bucket.Minio.Host != "" && plan.Bucket.S3.Name == "" && plan.Bucket.GS.Name == "" {
 		return nil
 	}
 
-	return errors.New("missing S3 bucket name or region or GS bucket name")
+	return errors.New("error in configuration : should only have one type of bucket configured")
 }
