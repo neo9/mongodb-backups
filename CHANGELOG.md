@@ -12,9 +12,14 @@
 
 ### Doc
 
+* Update changelog
 * Add changelog specifications
 * Add minio documentation
 * Add changelog
+
+### Fix
+
+* Upgrade golang version in dockerfile
 
 ### Fmt
 
