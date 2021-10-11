@@ -1,0 +1,9 @@
+{
+    "git": {
+        "requireCleanWorkingDir": false,
+        "commitMessage": "release: v${version}"
+    },
+    "hooks": {
+        "before:git:bump": "git-chglog --next-tag v${version} -o CHANGELOG.md"
+    }
+}
