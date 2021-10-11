@@ -1,4 +1,21 @@
 
+<a name="v0.10.0"></a>
+## [v0.10.0](https://github.com/neo9/mongodb-backups/compare/v0.9.0...v0.10.0) (2021-10-11)
+
+### Actions
+
+* Fix target branch
+
+### Mongo
+
+* Define both possibilities
+* Add custom authentication args
+
+### Release
+
+* Add release-it configuration
+
+
 <a name="v0.9.0"></a>
 ## [v0.9.0](https://github.com/neo9/mongodb-backups/compare/v0.8.0...v0.9.0) (2021-09-20)
 
@@ -12,6 +29,7 @@
 
 ### Doc
 
+* Add dockerfile fix in changelog
 * Update changelog
 * Add changelog specifications
 * Add minio documentation
