@@ -22,12 +22,16 @@ func RemoveFile(filename string) {
 func getAuthenticationArguments() string {
 	username, isUsernameDefined := os.LookupEnv("MONGODB_USER")
 	password, isPasswordDefined := os.LookupEnv("MONGODB_PASSWORD")
+	auth_args, isAuthArgsDefined := os.LookupEnv("MONGODB_AUTH_ARGS")
+	result := ""
 
 	if isUsernameDefined && isPasswordDefined {
-		return fmt.Sprintf("-u %s --password %s", username, password)
+		result = result + fmt.Sprintf("-u %s --password %s", username, password)
+	} else if isAuthArgsDefined {
+		result = result + " " + auth_args
 	}
 
-	return ""
+	return result
 }
 
 func logToFile(filename string, data []byte) error {

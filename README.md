@@ -96,6 +96,7 @@ All metrics have the label `name` equals to the config `name` key.
 
 - `MONGODB_USER`: MongoDB user
 - `MONGODB_PASSWORD`: MongoDB password
+- `MONGODB_AUTH_ARGS`: MongoDB additional authentication arguments
 
 ### AWS
 
