@@ -27,7 +27,8 @@ func getAuthenticationArguments() string {
 
 	if isUsernameDefined && isPasswordDefined {
 		result = result + fmt.Sprintf("-u %s --password %s", username, password)
-	} else if isAuthArgsDefined {
+	}
+	if isAuthArgsDefined {
 		result = result + " " + auth_args
 	}
 
