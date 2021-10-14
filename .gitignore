@@ -1,9 +1,10 @@
 .idea
 *.swo
 *.swp
-config.yaml
-config.yml
+./config.yaml
+./config.yml
 .env
 mongodb-backups
 vendor
 keys/
+config.yaml
