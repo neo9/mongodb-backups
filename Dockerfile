@@ -12,13 +12,17 @@ RUN go mod vendor
 ADD cmd ./cmd
 ADD pkg ./pkg
 
+ENV CGO_ENABLED=0
+
 RUN cd cmd  && go build -o /tmp/mongodb-backups
 
-FROM alpine:3.9
+FROM debian:10-slim
+
+RUN apt-get update && apt-get install curl -y
 
 COPY --from=builder /tmp/mongodb-backups /bin/mongodb-backups
-ENV MONGODB_TOOLS_VERSION 4.0.5-r0
 
-RUN apk add --no-cache ca-certificates mongodb-tools=${MONGODB_TOOLS_VERSION}
+RUN curl -o mongodb-tools.deb https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian10-x86_64-100.5.0.deb && apt install ./mongodb-tools.deb && rm mongodb-tools.deb
+RUN rm -rf /var/cache/apt
 
 CMD mongodb-backups
