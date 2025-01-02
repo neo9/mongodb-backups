@@ -1,10 +1,26 @@
 
+<a name="v0.12.0"></a>
+## [v0.12.0](https://github.com/neo9/mongodb-backups/compare/v0.11.0...v0.12.0) (2025-01-02)
+
+### Mongodump
+
+* add retries in CreateDump + configuration to set maxRetries and delay time
+
+### Release
+
+* v0.12.0
+
+
 <a name="v0.11.0"></a>
 ## [v0.11.0](https://github.com/neo9/mongodb-backups/compare/v0.10.0...v0.11.0) (2021-10-14)
 
 ### Mongo
 
 * use mongodb-tools 100.5.0
+
+### Release
+
+* v0.11.0
 
 
 <a name="v0.10.0"></a>
@@ -62,19 +78,7 @@
 
 
 <a name="v0.7.0"></a>
-## [v0.7.0](https://github.com/neo9/mongodb-backups/compare/v0.7.0-beta1...v0.7.0) (2020-12-18)
-
-### Job
-
-* Add instant backup example
-
-### Removefile
-
-* Make this function exportable
-
-
-<a name="v0.7.0-beta1"></a>
-## [v0.7.0-beta1](https://github.com/neo9/mongodb-backups/compare/v0.6.1...v0.7.0-beta1) (2020-12-14)
+## [v0.7.0](https://github.com/neo9/mongodb-backups/compare/v0.6.1...v0.7.0) (2020-12-18)
 
 ### Ci
 
@@ -87,6 +91,14 @@
 ### Gs
 
 * Add gs bucket support
+
+### Job
+
+* Add instant backup example
+
+### Removefile
+
+* Make this function exportable
 
 ### Restore
 

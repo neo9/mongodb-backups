@@ -65,6 +65,9 @@ tmpPath: /tmp
 mongodb:
   host: localhost
   port: 27017
+createDump:
+  maxRetries: 3
+  retryDelay: 60
 bucket:
   s3:
     name: bucket-name
