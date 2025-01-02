@@ -4,18 +4,20 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
 
 type Plan struct {
-	Name      string  `json:"name"`
-	Schedule  string  `json:"schedule"`
-	Retention string  `json:"retention"`
-	Timeout   string  `json:"timeout"`
-	TmpPath   string  `json:"tmpPath"`
-	MongoDB   MongoDB `json:"mongodb"`
-	Bucket    Bucket  `json:"buckets"`
+	Name       string     `json:"name"`
+	Schedule   string     `json:"schedule"`
+	Retention  string     `json:"retention"`
+	Timeout    string     `json:"timeout"`
+	TmpPath    string     `json:"tmpPath"`
+	MongoDB    MongoDB    `json:"mongodb"`
+	Bucket     Bucket     `json:"buckets"`
+	CreateDump CreateDump `json:"createDump"`
 }
 
 type Bucket struct {
@@ -39,6 +41,11 @@ type Minio struct {
 	SSL    bool   `json:"ssl,omitempty"`
 }
 
+type CreateDump struct {
+	MaxRetries int           `json:"maxRetries"`
+	RetryDelay time.Duration `json:"retryDelay"`
+}
+
 type MongoDB struct {
 	Host string `json:"host"`
 	Port string `json:"port"`
@@ -49,7 +56,12 @@ func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	if plan.CreateDump.MaxRetries == 0 {
+		plan.CreateDump.MaxRetries = 3
+	}
+	if plan.CreateDump.RetryDelay == 0 {
+		plan.CreateDump.RetryDelay = 60
+	}
 	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return plan, err

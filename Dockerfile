@@ -1,4 +1,4 @@
-FROM golang:1.16.8-alpine3.14 as builder
+FROM golang:1.16.8-alpine3.14 AS builder
 
 WORKDIR /usr/local/go/src/github.com/neo9/mongodb-backups
 

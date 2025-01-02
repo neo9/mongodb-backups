@@ -18,6 +18,26 @@ type MongoDBDump struct {
 }
 
 func CreateDump(plan *config.Plan) (MongoDBDump, error) {
+    var err error
+    var mongoDBDump MongoDBDump
+
+    maxRetries := plan.CreateDump.MaxRetries
+    retryDelay := plan.CreateDump.RetryDelay * time.Second
+
+    for i := 0; i < maxRetries; i++ {
+        mongoDBDump, err = CreateDumpInternal(plan)
+        if err != nil {
+            log.Errorf("Error creating mongodump (retry %d/%d): %v", i+1, maxRetries, err)
+            time.Sleep(retryDelay)
+        } else {
+            return mongoDBDump, nil
+        }
+    }
+
+    return mongoDBDump, err
+}
+
+func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 	dumpName := getDumpName()
 	outputFile := path.Join(plan.TmpPath, dumpName)
 	mongoDBDump := MongoDBDump{
