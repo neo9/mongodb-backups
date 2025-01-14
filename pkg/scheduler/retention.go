@@ -4,13 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/utils"
-	log "github.com/sirupsen/logrus"
 )
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-}
 
 func (scheduler *Scheduler) deleteOldBackups() {
 	files, err := scheduler.Bucket.ListFiles(scheduler.Plan.Name)
@@ -29,7 +25,7 @@ func (scheduler *Scheduler) deleteOldBackups() {
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
-		log.Debugf("File: ", file.Name)
+		log.Debug("File: ", file.Name)
 		timestamp, err := utils.GetBucketFileTimestamp(file.Name)
 		if err != nil {
 			scheduler.incRetentionMetricError(fmt.Sprintf("Could not apply retention: %v", err))
@@ -39,15 +35,15 @@ func (scheduler *Scheduler) deleteOldBackups() {
 		diffInSeconds := ageInSeconds - int64(retentionDuration.Seconds())
 
 		if diffInSeconds > 0 {
-			log.Debugf("File is %s old and schedule for removal", file.Name)
+			log.Debug("File is %s old and schedule for removal", file.Name)
 			removeFiles = append(removeFiles, file.Name)
 		} else {
-			log.Debugf("File is %s old and will be removed in %s", file.Name,
+			log.Debug("File is %s old and will be removed in %s", file.Name,
 				time.Duration(diffInSeconds*-1)*time.Second)
 		}
 	}
 
-	log.Infof("Retention: %d file(s) to remove", len(removeFiles))
+	log.Info("Retention: %d file(s) to remove", len(removeFiles))
 
 	status := "success"
 	for i := 0; i < len(removeFiles); i++ {

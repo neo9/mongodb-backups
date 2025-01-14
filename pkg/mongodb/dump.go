@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 )
 
@@ -25,7 +26,7 @@ func CreateDump(plan *config.Plan) (MongoDBDump, error) {
 	for i := 0; i < maxRetries; i++ {
 		mongoDBDump, err = CreateDumpInternal(plan)
 		if err != nil {
-			utils.Error("Error creating mongodump (retry %d/%d): %v", i+1, maxRetries, err)
+			log.Error("Error creating mongodump (retry %d/%d): %v", i+1, maxRetries, err)
 			time.Sleep(retryDelay)
 		} else {
 			return mongoDBDump, nil
@@ -53,7 +54,7 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 
 	duration, err := utils.GetDurationFromTimeString(plan.Timeout)
 	if err != nil {
-		utils.Error("Error parsing timeout: %v", err)
+		log.Error("Error parsing timeout: %v", err)
 		return mongoDBDump, err
 	}
 
@@ -62,13 +63,13 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 	mongoDBDump.Duration = time.Since(startTime).Seconds()
 
 	if err != nil {
-		utils.Error("Error creating dump: %v, %s", err, output)
-		utils.Error("Dump timeout: %s", duration)
+		log.Error("Error creating dump: %v, %s", err, output)
+		log.Error("Dump timeout: %s", duration)
 		RemoveFile(mongoDBDump.ArchiveFile)
 		return mongoDBDump, err
 	}
 
-	utils.Info("Done creating dump for %s", plan.Name)
+	log.Info("Done creating dump for %s", plan.Name)
 	err = logToFile(mongoDBDump.LogFile, output)
 	if err != nil {
 		RemoveFile(mongoDBDump.ArchiveFile)

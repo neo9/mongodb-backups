@@ -1,13 +1,12 @@
-package utils
+package log
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 	"sync"
 )
 
-var loggerInstance *slog.Logger // Declare as a pointer to *slog.Logger
+var loggerInstance *slog.Logger
 
 var once sync.Once
 
@@ -19,11 +18,13 @@ func GetLogger() *slog.Logger {
 }
 
 func Error(log string, args ...interface{}) {
-	// Log the error
-	GetLogger().Error(fmt.Sprintf(log, args...))
+	GetLogger().Error(log, args...)
 }
 
 func Info(log string, args ...interface{}) {
-	// Log the info
-	GetLogger().Info(fmt.Sprintf(log, args...))
+	GetLogger().Info(log, args...)
+}
+
+func Debug(log string, args ...interface{}) {
+	GetLogger().Debug(log, args...)
 }

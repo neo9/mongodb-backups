@@ -5,20 +5,16 @@ import (
 	"path"
 	"time"
 
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/mongodb"
-	log "github.com/sirupsen/logrus"
 )
 
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-}
-
 func (scheduler *Scheduler) runBackup() {
-	log.Infof("Running mongodb %s", scheduler.Plan.Name)
+	log.Info("Running mongodb %s", scheduler.Plan.Name)
 
 	mongoDBDump, err := mongodb.CreateDump(scheduler.Plan)
 	if err != nil {
-		log.Errorf("Error creating dump for %s", scheduler.Plan.Name)
+		log.Error("Error creating dump for %s", scheduler.Plan.Name)
 		scheduler.incBackupMetric("error")
 		return
 	}
@@ -49,7 +45,7 @@ func (scheduler *Scheduler) addDurationMetric(duration float64) {
 func (scheduler *Scheduler) addSizeMetricFromBackup(filename string) {
 	file, err := os.Stat(filename)
 	if err != nil {
-		log.Errorf("Error computing file size for %s: %v", filename, err)
+		log.Error("Error computing file size for %s: %v", filename, err)
 		return
 	}
 
@@ -57,17 +53,17 @@ func (scheduler *Scheduler) addSizeMetricFromBackup(filename string) {
 }
 
 func (scheduler *Scheduler) uploadToS3(filename string, destFolder string) error {
-	log.Infof("Uploading mongodb file %s", path.Base(filename))
+	log.Info("Uploading mongodb file %s", path.Base(filename))
 
 	err := scheduler.Bucket.Upload(filename, destFolder)
 	if err != nil {
-		log.Errorf("Could not upload to S3: %v", err)
+		log.Error("Could not upload to S3: %v", err)
 		return err
 	}
 
 	err = os.Remove(filename)
 	if err != nil {
-		log.Errorf("Could not delete file: %v", err)
+		log.Error("Could not delete file: %v", err)
 		return err
 	}
 

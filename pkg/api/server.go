@@ -6,13 +6,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
 )
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-}
 
 type HttpServer struct {
 	Port int32
@@ -33,6 +29,8 @@ func (server *HttpServer) Start() {
 	r.Use(middleware.Recoverer)
 
 	r.Mount("/metrics", metricsRouter())
-
-	log.Error(http.ListenAndServe(fmt.Sprintf(":%v", server.Port), r))
+	err := http.ListenAndServe(fmt.Sprintf(":%v", server.Port), r)
+	if err != nil {
+		log.Error("Could not start server in port %s", server.Port)
+	}
 }

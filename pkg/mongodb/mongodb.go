@@ -2,20 +2,15 @@ package mongodb
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/neo9/mongodb-backups/pkg/log"
 )
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-}
 
 func RemoveFile(filename string) {
 	err := os.Remove(filename)
 	if err != nil {
-		log.Errorf("Cannot delete temporary file %s: %v", filename, err)
+		log.Error("Cannot delete temporary file %s: %v", filename, err)
 	}
 }
 
@@ -37,9 +32,9 @@ func getAuthenticationArguments() string {
 
 func logToFile(filename string, data []byte) error {
 	if len(data) > 0 {
-		err := ioutil.WriteFile(filename, data, 0644)
+		err := os.WriteFile(filename, data, 0644)
 		if err != nil {
-			log.Errorf("Error writing dump log file: %v", err)
+			log.Error("Error writing dump log file: %v", err)
 			return err
 		}
 	}

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/utils"
 )
 
@@ -21,7 +22,7 @@ func RestoreDump(filename string, args string, plan *config.Plan) error {
 
 	duration, err := utils.GetDurationFromTimeString(plan.Timeout)
 	if err != nil {
-		utils.Error("Error parsing timeout: %v", err)
+		log.Error("Error parsing timeout: %v", err)
 		return err
 	}
 
@@ -30,12 +31,12 @@ func RestoreDump(filename string, args string, plan *config.Plan) error {
 	seconds := time.Since(startTime).Seconds()
 
 	if err != nil {
-		utils.Error("Error restoring dump: %v, %s", err, output)
-		utils.Error("Restoring timeout: %s", duration)
+		log.Error("Error restoring dump: %v, %s", err, output)
+		log.Error("Restoring timeout: %s", duration)
 		return err
 	}
 
-	utils.Info("Done restoring dump for %s in %s s", plan.Name, seconds)
+	log.Info("Done restoring dump for %s in %f s", plan.Name, seconds)
 
 	return err
 }

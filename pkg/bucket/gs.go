@@ -9,11 +9,10 @@ import (
 	"strings"
 
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"google.golang.org/api/iterator"
 
 	"cloud.google.com/go/storage"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type GSBucket struct {
@@ -48,7 +47,7 @@ func (bucket *GSBucket) Upload(filename string, destFolder string) error {
 		return err
 	}
 
-	log.Infof("upload finished")
+	log.Info("upload finished")
 	return nil
 }
 
@@ -56,7 +55,7 @@ func (bucket *GSBucket) ListFiles(destFolder string) ([]S3File, error) {
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		log.Infof("failed to create client: %v", err)
+		log.Info("failed to create client: %v", err)
 		return []S3File{}, err
 	}
 	defer client.Close()
@@ -92,7 +91,7 @@ func (bucket *GSBucket) DownloadFile(src string) (string, error) {
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		log.Infof("failed to create client: %v", err)
+		log.Info("failed to create client: %v", err)
 		return "", err
 	}
 	defer client.Close()
@@ -123,14 +122,14 @@ func (bucket *GSBucket) DeleteFile(filename string) error {
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
 	if err != nil {
-		log.Infof("failed to create client: %v", err)
+		log.Info("failed to create client: %v", err)
 		return err
 	}
 	defer client.Close()
 	bucketClient := client.Bucket(bucket.GS.Name)
 
 	if err := bucketClient.Object(filename).Delete(ctx); err != nil {
-		log.Errorf("unable to delete file %q: %v", filename, err)
+		log.Error("unable to delete file %q: %v", filename, err)
 		return err
 	}
 

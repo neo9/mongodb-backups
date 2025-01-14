@@ -8,9 +8,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/minio/minio-go/v7 v7.0.13
 	github.com/prometheus/client_golang v1.20.5
-	github.com/prometheus/common v0.61.0
 	github.com/robfig/cron v1.2.0
-	github.com/sirupsen/logrus v1.9.3
 	google.golang.org/api v0.216.0
 	gopkg.in/yaml.v2 v2.4.0
 )
@@ -52,8 +50,10 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
+	github.com/prometheus/common v0.61.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/rs/xid v1.2.1 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/detectors/gcp v1.31.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.54.0 // indirect
