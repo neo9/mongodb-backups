@@ -2,26 +2,25 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"runtime"
 
 	"github.com/neo9/mongodb-backups/pkg/api"
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/mongodb"
 	"github.com/neo9/mongodb-backups/pkg/restore"
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	"github.com/neo9/mongodb-backups/pkg/utils"
-	log "github.com/sirupsen/logrus"
 )
 
 func printVersion() {
-	log.Info(fmt.Sprintf("Go Version: %s", runtime.Version()))
-	log.Info(fmt.Sprintf("Go OS/Arch: %s/%s", runtime.GOOS, runtime.GOARCH))
+	log.Info("Go Version: %s", runtime.Version())
+	log.Info("Go OS/Arch: %s/%s", runtime.GOOS, runtime.GOARCH)
 }
 
 func getScheduler(confPath string) *scheduler.Scheduler {
-	log.Infof("Parsing configuration file: %s", confPath)
+	log.Info("Parsing configuration file: %s", confPath)
 	plan := config.Plan{}
 	_, err := plan.GetPlan(confPath)
 	if err != nil {
@@ -57,10 +56,10 @@ func restoreLastBackup(confPath string, args string) {
 
 func arbitraryDump(confPath string) {
 	backupScheduler := getScheduler(confPath)
-	log.Infof("Creating MongoDB dump for %s", backupScheduler.Plan.Name)
+	log.Info("Creating MongoDB dump for %s", backupScheduler.Plan.Name)
 	mongoDBDump, err := mongodb.CreateDump(backupScheduler.Plan)
 	if err != nil {
-		log.Errorf("Error creating dump for %s", backupScheduler.Plan.Name)
+		log.Error("Error creating dump for %s", backupScheduler.Plan.Name)
 		os.Exit(1)
 	}
 
@@ -68,14 +67,14 @@ func arbitraryDump(confPath string) {
 	uploadDumpFile(mongoDBDump.LogFile, backupScheduler)
 	mongodb.RemoveFile(mongoDBDump.ArchiveFile)
 	mongodb.RemoveFile(mongoDBDump.LogFile)
-	log.Infof("Dump successful")
+	log.Info("Dump successful")
 }
 
 func uploadDumpFile(filename string, scheduler *scheduler.Scheduler) {
-	log.Infof("Upload file %s. Size: %s", filename, utils.GetHumanFileSize(filename))
+	log.Info("Upload file %s. Size: %s", filename, utils.GetHumanFileSize(filename))
 	err := scheduler.Bucket.Upload(filename, scheduler.Plan.Name)
 	if err != nil {
-		log.Errorf("Could not upload file: %v", err)
+		log.Error("Could not upload file: %v", err)
 		os.Exit(1)
 	}
 }
@@ -89,7 +88,7 @@ func launchServer(confPath string, port int32) {
 		Port: port,
 	}
 
-	log.Infof("starting http server on port %v", server.Port)
+	log.Info("starting http server on port %v", server.Port)
 	server.Start()
 }
 
@@ -104,19 +103,14 @@ func main() {
 
 	flag.Parse()
 	if *list {
-		log.SetFormatter(&log.TextFormatter{})
 		listBackups(*confPath)
 	} else if *dump {
-		log.SetFormatter(&log.TextFormatter{})
 		arbitraryDump(*confPath)
 	} else if *restoreLast {
-		log.SetFormatter(&log.TextFormatter{})
 		restoreLastBackup(*confPath, *args)
 	} else if *restoreID != "" {
-		log.SetFormatter(&log.TextFormatter{})
 		restoreBackup(*confPath, *restoreID, *args)
 	} else {
 		launchServer(*confPath, int32(*port))
-		log.SetFormatter(&log.JSONFormatter{})
 	}
 }

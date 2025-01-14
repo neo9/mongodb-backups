@@ -1,28 +1,33 @@
-FROM golang:1.16.8-alpine3.14 AS builder
+FROM golang:1.23.4-alpine AS builder
 
 WORKDIR /usr/local/go/src/github.com/neo9/mongodb-backups
 
-RUN apk add git &&  export GO111MODULE=on
+COPY . ./
 
-ADD go.mod ./
-ADD go.sum ./
+# Descargar dependencias y generar el directorio vendor
+RUN go mod tidy && go mod vendor
 
-RUN go mod vendor
-
-ADD cmd ./cmd
-ADD pkg ./pkg
+# Copiar el código fuente
+COPY cmd ./cmd
+COPY pkg ./pkg
 
 ENV CGO_ENABLED=0
 
-RUN cd cmd  && go build -o /tmp/mongodb-backups
+RUN cd cmd && go build -o /tmp/mongodb-backups
 
-FROM debian:10-slim
+# Use an Alpine base image
+FROM alpine:3.21.2
 
-RUN apt-get update && apt-get install curl -y
+# Add the edge community repository
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories
+
+# Update package list and install mongodb-tools
+RUN apk update && \
+    apk add --no-cache mongodb-tools
 
 COPY --from=builder /tmp/mongodb-backups /bin/mongodb-backups
 
-RUN curl -o mongodb-tools.deb https://fastdl.mongodb.org/tools/db/mongodb-database-tools-debian10-x86_64-100.5.0.deb && apt install ./mongodb-tools.deb && rm mongodb-tools.deb
-RUN rm -rf /var/cache/apt
+# Verify installation
+RUN mongodump --version
 
-CMD mongodb-backups
+CMD ["mongodb-backups"]

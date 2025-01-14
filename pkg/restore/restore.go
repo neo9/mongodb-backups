@@ -9,10 +9,10 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/neo9/mongodb-backups/pkg/bucket"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/mongodb"
 	"github.com/neo9/mongodb-backups/pkg/scheduler"
 	"github.com/neo9/mongodb-backups/pkg/utils"
-	log "github.com/sirupsen/logrus"
 )
 
 func DisplayBackups(scheduler *scheduler.Scheduler) error {
@@ -22,7 +22,7 @@ func DisplayBackups(scheduler *scheduler.Scheduler) error {
 	}
 
 	if len(files) == 0 {
-		log.Infof("Bucket is empty")
+		log.Info("Bucket is empty")
 		return nil
 	}
 
@@ -30,11 +30,11 @@ func DisplayBackups(scheduler *scheduler.Scheduler) error {
 		file := files[i]
 		timestamp, err := utils.GetBucketFileTimestamp(path.Base(file.Name))
 		if err != nil {
-			log.Errorf("Could not parse file: %v", err)
+			log.Error("Could not parse file: %v", err)
 			continue
 		}
 
-		log.Infof("%s | Backup %s, size: %s",
+		log.Info("%s | Backup %s, size: %s",
 			time.Unix(timestamp, 10),
 			file.Etag,
 			utils.GetHumanBytes(file.Size))
@@ -55,7 +55,7 @@ func RestoreLast(scheduler *scheduler.Scheduler, args string) error {
 	}
 
 	file := files[len(files)-1]
-	log.Infof("Restoring backup %s from snapshot %s", file.Etag, file.Name)
+	log.Info("Restoring backup %s from snapshot %s", file.Etag, file.Name)
 	return restoreBackup(scheduler, file.Name, args)
 }
 
@@ -74,11 +74,11 @@ func Restore(scheduler *scheduler.Scheduler, restoreID string, args string) erro
 	}
 
 	if file.Name == "" {
-		log.Errorf("Could not find tag %s in folder %s", restoreID, scheduler.Plan.Name)
+		log.Error("Could not find tag %s in folder %s", restoreID, scheduler.Plan.Name)
 		return errors.New("TAG_NOT_FOUND")
 	}
 
-	log.Infof("Restoring backup %s from snapshot %s", restoreID, file.Name)
+	log.Info("Restoring backup %s from snapshot %s", restoreID, file.Name)
 	return restoreBackup(scheduler, file.Name, args)
 }
 
@@ -86,7 +86,7 @@ func restoreBackup(scheduler *scheduler.Scheduler, src string, args string) erro
 	log.Info("Download snapshot")
 	file, err := scheduler.Bucket.DownloadFile(src)
 	if err != nil {
-		log.Errorf("Could not download snapshot: %v", err)
+		log.Error("Could not download snapshot: %v", err)
 		_ = os.Remove(file)
 		return err
 	}
@@ -99,7 +99,7 @@ func restoreBackup(scheduler *scheduler.Scheduler, src string, args string) erro
 func getFiles(scheduler *scheduler.Scheduler) ([]bucket.S3File, error) {
 	files, err := scheduler.Bucket.ListFiles(scheduler.Plan.Name)
 	if err != nil {
-		log.Errorf("Could not list files for %s: %v", scheduler.Plan.Name, err)
+		log.Error("Could not list files for %s: %v", scheduler.Plan.Name, err)
 		return []bucket.S3File{}, err
 	}
 

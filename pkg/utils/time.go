@@ -5,19 +5,13 @@ import (
 	"regexp"
 	"strconv"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-}
 
 func GetDurationFromTimeString(timeStr string) (time.Duration, error) {
 	reg := regexp.MustCompile(`(?P<Number>\d+)(?P<Unit>[Mwdhm])`)
 	match := reg.FindStringSubmatch(timeStr)
 	if len(match) != 3 {
-		return 0, fmt.Errorf("Could not parse string: " + timeStr + ". Wrong time format. Example: 1h, 3w, 15d")
+		return 0, fmt.Errorf("could not parse string: %s. wrong time format. Example: 1h, 3w, 15d", timeStr)
 	}
 
 	number, _ := strconv.Atoi(match[1])

@@ -5,9 +5,9 @@ import (
 
 	"github.com/neo9/mongodb-backups/pkg/bucket"
 	"github.com/neo9/mongodb-backups/pkg/config"
+	"github.com/neo9/mongodb-backups/pkg/log"
 	"github.com/neo9/mongodb-backups/pkg/metrics"
 	"github.com/robfig/cron"
-	log "github.com/sirupsen/logrus"
 )
 
 type Scheduler struct {
@@ -15,10 +15,6 @@ type Scheduler struct {
 	Plan    *config.Plan
 	Bucket  bucket.Bucket
 	Metrics *metrics.BackupMetrics
-}
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
 }
 
 func New(plan *config.Plan) *Scheduler {
@@ -37,16 +33,16 @@ func (scheduler *Scheduler) Run() {
 		scheduler.runBackup()
 	})
 	if err != nil {
-		log.Errorf("Could not schedule mongodb %s, error: %v", scheduler.Plan.Name, err)
+		log.Error("Could not schedule mongodb %s, error: %v", scheduler.Plan.Name, err)
 	}
 
-	log.Infof("Name: %s, Schedule: %s", scheduler.Plan.Name, scheduler.Plan.Schedule)
+	log.Info("Name: %s, Schedule: %s", scheduler.Plan.Name, scheduler.Plan.Schedule)
 
 	err = scheduler.Cron.AddFunc("0 0 * * * *", func() {
 		scheduler.deleteOldBackups()
 	})
 	if err != nil {
-		log.Errorf("Could not schedule retention, error: %v", err)
+		log.Error("Could not schedule retention, error: %v", err)
 	}
 
 	scheduler.Cron.Start()
@@ -57,5 +53,5 @@ func (scheduler *Scheduler) displaySchedule() {
 	entries := scheduler.Cron.Entries()
 
 	entry := entries[0]
-	log.Infof("Backup %s will run at %v", scheduler.Plan.Name, entry.Next)
+	log.Info("Backup %s will run at %v", scheduler.Plan.Name, entry.Next)
 }
