@@ -2,8 +2,6 @@ FROM golang:1.23.4-alpine AS builder
 
 WORKDIR /usr/local/go/src/github.com/neo9/mongodb-backups
 
-RUN apk add git
-
 COPY . ./
 
 # Descargar dependencias y generar el directorio vendor
@@ -18,7 +16,7 @@ ENV CGO_ENABLED=0
 RUN cd cmd && go build -o /tmp/mongodb-backups
 
 # Use an Alpine base image
-FROM alpine:3.18
+FROM alpine:3.21.2
 
 # Add the edge community repository
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories
@@ -32,4 +30,4 @@ COPY --from=builder /tmp/mongodb-backups /bin/mongodb-backups
 # Verify installation
 RUN mongodump --version
 
-CMD mongodb-backups
+CMD ["mongodb-backups"]
