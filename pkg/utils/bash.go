@@ -11,7 +11,9 @@ func LaunchCommand(command string, timeout time.Duration) ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 
 	cmd := exec.CommandContext(ctx, "/bin/sh", "-c", command)
-	output, err := cmd.Output()
+	cmd.Start()
+	cmd.Wait()
+	output, err := cmd.CombinedOutput()
 
 	// Call cancel after command execution
 	cancel()

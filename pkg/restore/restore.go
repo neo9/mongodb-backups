@@ -15,32 +15,43 @@ import (
 	"github.com/neo9/mongodb-backups/pkg/utils"
 )
 
-func DisplayBackups(scheduler *scheduler.Scheduler) error {
+type Backup struct {
+	Timestamp time.Time
+	Etag      string
+	Size      string
+}
+
+func GetBackups(scheduler *scheduler.Scheduler) ([]Backup, error) {
 	files, err := getFiles(scheduler)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(files) == 0 {
 		log.Info("Bucket is empty")
-		return nil
+		return nil, nil
 	}
+	var backups []Backup
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
 		timestamp, err := utils.GetBucketFileTimestamp(path.Base(file.Name))
+
 		if err != nil {
 			log.Error("Could not parse file: %v", err)
 			continue
 		}
 
-		log.Info("%s | Backup %s, size: %s",
-			time.Unix(timestamp, 10),
-			file.Etag,
-			utils.GetHumanBytes(file.Size))
+		backup := Backup{
+			Timestamp: time.Unix(timestamp, 10),
+			Etag:      file.Etag,
+			Size:      utils.GetHumanBytes(file.Size),
+		}
+
+		backups = append(backups, backup)
 	}
 
-	return nil
+	return backups, nil
 }
 
 func RestoreLast(scheduler *scheduler.Scheduler, args string) error {
