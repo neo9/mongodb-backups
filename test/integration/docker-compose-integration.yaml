@@ -7,13 +7,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
       MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_NON_ROOT_USERNAME: test
-      MONGO_NON_ROOT_PASSWORD: test
       MONGO_INITDB_DATABASE: integration
-      SEED_FILE_PATH: seed.json
-    volumes:
-      - ./seed.json:/tmp/data/seed.json
-      - ./init.js:/docker-entrypoint-initdb.d/init.js
   minio:
     image: minio/minio:latest
     container_name: minio_test_integration

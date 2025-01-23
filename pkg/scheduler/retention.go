@@ -8,7 +8,7 @@ import (
 	"github.com/neo9/mongodb-backups/pkg/utils"
 )
 
-func (scheduler *Scheduler) deleteOldBackups() {
+func (scheduler *Scheduler) DeleteOldBackups() {
 	files, err := scheduler.Bucket.ListFiles(scheduler.Plan.Name)
 	if err != nil {
 		scheduler.incRetentionMetricError(fmt.Sprintf("Could not list files for plan %s", scheduler.Plan.Name))

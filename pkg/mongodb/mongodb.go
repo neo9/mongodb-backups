@@ -8,7 +8,12 @@ import (
 )
 
 func RemoveFile(filename string) {
-	err := os.Remove(filename)
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		log.Info("No need to delete the file %s", filename)
+		return
+	}
+	err = os.Remove(filename)
 	if err != nil {
 		log.Error("Cannot delete temporary file %s: %v", filename, err)
 	}

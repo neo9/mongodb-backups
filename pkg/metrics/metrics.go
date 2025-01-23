@@ -1,6 +1,9 @@
 package metrics
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/neo9/mongodb-backups/pkg/log"
+	"github.com/prometheus/client_golang/prometheus"
+)
 
 type BackupMetrics struct {
 	Total                  *prometheus.CounterVec
@@ -74,12 +77,19 @@ func New(namespace string, subsystem string) *BackupMetrics {
 		[]string{"name"},
 	)
 
-	prometheus.MustRegister(prom.Total)
-	prometheus.MustRegister(prom.RetentionTotal)
-	prometheus.MustRegister(prom.BucketCount)
-	prometheus.MustRegister(prom.Size)
-	prometheus.MustRegister(prom.Latency)
-	prometheus.MustRegister(prom.LastSuccessfulSnapshot)
+	safeRegister(prom.Total)
+	safeRegister(prom.RetentionTotal)
+	safeRegister(prom.BucketCount)
+	safeRegister(prom.Size)
+	safeRegister(prom.Latency)
+	safeRegister(prom.LastSuccessfulSnapshot)
 
 	return prom
+}
+
+func safeRegister(collector prometheus.Collector) {
+	err := prometheus.Register(collector)
+	if err != nil {
+		log.Warn("Metric already present in the system")
+	}
 }

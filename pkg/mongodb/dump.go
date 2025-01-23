@@ -64,7 +64,7 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 
 	if err != nil {
 		log.Error("Error creating dump: %v, %s", err, output)
-		log.Error("Dump timeout: %s", duration)
+		log.Error(string(output))
 		RemoveFile(mongoDBDump.ArchiveFile)
 		return mongoDBDump, err
 	}

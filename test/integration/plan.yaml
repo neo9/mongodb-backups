@@ -6,6 +6,6 @@ mongodb:
   host: localhost
   port: 27017
 name: test
-retention: 1w
+retention: 1s
 schedule: 0 22 * * *
 timeout: 15m
