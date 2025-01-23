@@ -90,6 +90,6 @@ func New(namespace string, subsystem string) *BackupMetrics {
 func safeRegister(collector prometheus.Collector) {
 	err := prometheus.Register(collector)
 	if err != nil {
-		log.Warn("Metric already present in the system")
+		log.Warn("Metric %s already present in the system")
 	}
 }

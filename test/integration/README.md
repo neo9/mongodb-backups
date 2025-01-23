@@ -15,4 +15,5 @@ Before running the tests, ensure you have the following tools installed:
 - **mongorestore**: A tool to restore MongoDB backups.
 - **mongosh**: A MongoDB shell for interacting with the database and launch the commands for testing.
 
+Seems we need the use of Time.Sleep as mongodb does not seem to refresh in such a short time
 ---
