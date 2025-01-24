@@ -19,11 +19,13 @@ func TestMain(m *testing.M) {
 	os.Setenv("MINIO_SECRET_ACCESS_KEY", "minioadmin")
 	os.Setenv("MONGODB_USER", "test")
 	os.Setenv("MONGODB_PASSWORD", "test")
+
 	remove_data()
 	time.Sleep(time.Second)
 	init_data()
 	time.Sleep(time.Second)
 	actions.DeleteOldBackups(plan)
+
 	//Run the tests
 	exitVal := m.Run()
 
@@ -47,8 +49,10 @@ func TestArbitraryDump(t *testing.T) {
 
 func TestRestoreLastBackup(t *testing.T) {
 	actions.ArbitraryDump(plan)
+
 	remove_data()
 	time.Sleep(time.Second)
+
 	documents := number_of_documents()
 
 	if documents != 0 {
@@ -65,11 +69,15 @@ func TestRestoreLastBackup(t *testing.T) {
 
 func TestRestoreMediumBackup(t *testing.T) {
 	actions.ArbitraryDump(plan)
+
 	remove_data()
 	time.Sleep(time.Second)
+
 	actions.ArbitraryDump(plan)
+
 	init_data()
 	time.Sleep(time.Second)
+
 	actions.ArbitraryDump(plan)
 
 	backups := actions.ListBackups(plan)
@@ -89,7 +97,7 @@ func TestRestoreMediumBackup(t *testing.T) {
 	}
 
 	actions.RestoreBackup(plan, backup_wihtout_data.Etag, "--drop")
-	time.Sleep(3 * time.Second)
+	time.Sleep(time.Second)
 
 	documents = number_of_documents()
 

@@ -7,9 +7,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
       MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_NON_ROOT_USERNAME: test
-      MONGO_NON_ROOT_PASSWORD: test
-      MONGO_INITDB_DATABASE: edge
+      MONGO_INITDB_DATABASE: admin
   minio:
     image: minio/minio:latest
     container_name: minio_test_edge
