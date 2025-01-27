@@ -20,12 +20,6 @@ func TestMain(m *testing.M) {
 	os.Setenv("MONGODB_USER", "test")
 	os.Setenv("MONGODB_PASSWORD", "test")
 
-	remove_data()
-	time.Sleep(time.Second)
-	init_data()
-	time.Sleep(time.Second)
-	actions.DeleteOldBackups(plan)
-
 	//Run the tests
 	exitVal := m.Run()
 
@@ -33,7 +27,17 @@ func TestMain(m *testing.M) {
 	os.Exit(exitVal)
 }
 
+func setUp() {
+	remove_data()
+	time.Sleep(time.Second)
+	init_data()
+	time.Sleep(time.Second)
+	actions.DeleteOldBackups(plan)
+}
+
 func TestArbitraryDump(t *testing.T) {
+	setUp()
+
 	actions.ArbitraryDump(plan)
 	backups := actions.ListBackups(plan)
 	if len(backups) != 1 {
@@ -48,6 +52,8 @@ func TestArbitraryDump(t *testing.T) {
 }
 
 func TestRestoreLastBackup(t *testing.T) {
+	setUp()
+
 	actions.ArbitraryDump(plan)
 
 	remove_data()
@@ -68,6 +74,8 @@ func TestRestoreLastBackup(t *testing.T) {
 }
 
 func TestRestoreMediumBackup(t *testing.T) {
+	setUp()
+
 	actions.ArbitraryDump(plan)
 
 	remove_data()

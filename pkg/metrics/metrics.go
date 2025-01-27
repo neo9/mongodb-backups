@@ -77,19 +77,19 @@ func New(namespace string, subsystem string) *BackupMetrics {
 		[]string{"name"},
 	)
 
-	safeRegister(prom.Total)
-	safeRegister(prom.RetentionTotal)
-	safeRegister(prom.BucketCount)
-	safeRegister(prom.Size)
-	safeRegister(prom.Latency)
-	safeRegister(prom.LastSuccessfulSnapshot)
+	safeRegister("Total", prom.Total)
+	safeRegister("RetentionTotal", prom.RetentionTotal)
+	safeRegister("BucketCount", prom.BucketCount)
+	safeRegister("Size", prom.Size)
+	safeRegister("Latency", prom.Latency)
+	safeRegister("LastSuccessfulSnapshot", prom.LastSuccessfulSnapshot)
 
 	return prom
 }
 
-func safeRegister(collector prometheus.Collector) {
+func safeRegister(metric_name string, collector prometheus.Collector) {
 	err := prometheus.Register(collector)
 	if err != nil {
-		log.Warn("Metric %s already present in the system")
+		log.Warn("Metric %s already present in the system", metric_name)
 	}
 }
