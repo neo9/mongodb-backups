@@ -1,3 +1,6 @@
+//go:build edge
+// +build edge
+
 package test_edge
 
 import (
