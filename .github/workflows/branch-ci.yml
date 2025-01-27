@@ -17,14 +17,14 @@ jobs:
           MONGO_INITDB_ROOT_PASSWORD: test
           MONGO_INITDB_DATABASE: integration
       minio:
-        image: minio/minio:latest
+        image: bitnami/minio:latest
         ports:
           - 9000:9000
-          - 9001:9001
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
-        options: --entrypoint "minio server /data" --console-address ":9001"
+        options: --name minio-server
+
 
     steps:
       - name: Checkout code
