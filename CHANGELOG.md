@@ -1,16 +1,4 @@
 
-<a name="v0.12.0"></a>
-## [v0.12.0](https://github.com/neo9/mongodb-backups/compare/v0.11.0...v0.12.0) (2025-01-02)
-
-### Mongodump
-
-* add retries in CreateDump + configuration to set maxRetries and delay time
-
-### Release
-
-* v0.12.0
-
-
 <a name="v0.11.0"></a>
 ## [v0.11.0](https://github.com/neo9/mongodb-backups/compare/v0.10.0...v0.11.0) (2021-10-14)
 
