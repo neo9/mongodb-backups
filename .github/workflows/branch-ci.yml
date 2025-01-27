@@ -24,6 +24,7 @@ jobs:
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
+        entrypoint: minio server /data --console-address ":9001"
 
     steps:
       - name: Checkout code
