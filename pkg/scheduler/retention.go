@@ -55,7 +55,7 @@ func (scheduler *Scheduler) DeleteOldBackups() {
 	}
 
 	snapshotCount := float64(len(files)/2 - len(removeFiles))
-	scheduler.Metrics.BucketCount.WithLabelValues(scheduler.Plan.Name).Set(snapshotCount)
+	scheduler.Metrics.RetentionBucketCount.WithLabelValues(scheduler.Plan.Name).Set(snapshotCount)
 	scheduler.Metrics.RetentionTotal.WithLabelValues(scheduler.Plan.Name, status).Inc()
 }
 
