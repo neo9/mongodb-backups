@@ -156,6 +156,10 @@ go run ./cmd --config config.yaml
 
 # With Docker
 docker build -t n9-backup .
-docker run --rm -v /tmp/config:/tmp/config n9-backup mongodb-backup --config /tmp/config/config.yaml
+docker run --rm -v /tmp/config:/tmp/config n9-backup mongodb-backups --config /tmp/config/config.yaml
+
+#With Docker compose
+docker-compose -f docker-compose.yaml up 
+docker exec n9-backup-dev mongodb-backups --config ./home/config.yaml
 ```
 
