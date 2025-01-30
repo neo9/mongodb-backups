@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"sync"
@@ -18,17 +19,17 @@ func GetLogger() *slog.Logger {
 }
 
 func Error(log string, args ...interface{}) {
-	GetLogger().Error(log, args...)
+	GetLogger().Error(fmt.Sprintf(log, args...))
 }
 
 func Info(log string, args ...interface{}) {
-	GetLogger().Info(log, args...)
+	GetLogger().Info(fmt.Sprintf(log, args...))
 }
 
 func Debug(log string, args ...interface{}) {
-	GetLogger().Debug(log, args...)
+	GetLogger().Debug(fmt.Sprintf(log, args...))
 }
 
 func Warn(log string, args ...interface{}) {
-	GetLogger().Warn(log, args...)
+	GetLogger().Warn(fmt.Sprintf(log, args...))
 }
