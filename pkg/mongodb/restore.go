@@ -33,7 +33,7 @@ func RestoreDump(filename string, args string, plan *config.Plan) error {
 	seconds := time.Since(startTime).Seconds()
 
 	if err != nil {
-		log.Error("Error restoring dump: %v, %s", err)
+		log.Error("Error restoring dump: %v, %s", seconds, err)
 		displayOutput(string(output))
 		log.Error("Restoring timeout: %s", duration)
 		return err
@@ -52,7 +52,7 @@ func displayOutput(output string) {
 	lines := strings.Split(output, "\n") // Split the output into lines
 	for _, line := range lines {
 		if line != "" {
-			log.Error(line)
+			log.Error("%s", line)
 		}
 	}
 

@@ -31,6 +31,6 @@ func (server *HttpServer) Start() {
 	r.Mount("/metrics", metricsRouter())
 	err := http.ListenAndServe(fmt.Sprintf(":%v", server.Port), r)
 	if err != nil {
-		log.Error("Could not start server in port %s", server.Port)
+		log.Error("Could not start server in port %v", server.Port)
 	}
 }

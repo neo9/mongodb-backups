@@ -25,7 +25,7 @@ func (scheduler *Scheduler) DeleteOldBackups() {
 
 	for i := 0; i < len(files); i++ {
 		file := files[i]
-		log.Debug("File: ", file.Name)
+		log.Debug("File: %s", file.Name)
 		timestamp, err := utils.GetBucketFileTimestamp(file.Name)
 		if err != nil {
 			scheduler.incRetentionMetricError(fmt.Sprintf("Could not apply retention: %v", err))
@@ -60,6 +60,6 @@ func (scheduler *Scheduler) DeleteOldBackups() {
 }
 
 func (scheduler *Scheduler) incRetentionMetricError(error string) {
-	log.Error(error)
+	log.Error("%s", error)
 	scheduler.Metrics.RetentionTotal.WithLabelValues(scheduler.Plan.Name, "error").Inc()
 }
