@@ -53,7 +53,7 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 
 	if err != nil {
 		log.Error("Error creating dump: %v, %s", err, output)
-		log.Error(string(output))
+		log.Error("%s", string(output))
 		RemoveFile(mongoDBDump.ArchiveFile)
 		return mongoDBDump, err
 	}
