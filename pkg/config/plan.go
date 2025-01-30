@@ -2,12 +2,14 @@ package config
 
 import (
 	"errors"
-	"io/ioutil"
 	"os"
 	"time"
 
 	"gopkg.in/yaml.v2"
 )
+
+const DEFAULT_TRIES = 3
+const DEFAULT_DELAY = 60
 
 type Plan struct {
 	Name       string     `json:"name"`
@@ -51,18 +53,22 @@ type MongoDB struct {
 	Port string `json:"port"`
 }
 
+func (plan *Plan) setDefaults() {
+	if plan.CreateDump.MaxRetries == 0 {
+		plan.CreateDump.MaxRetries = DEFAULT_TRIES
+	}
+	if plan.CreateDump.RetryDelay == 0 {
+		plan.CreateDump.RetryDelay = DEFAULT_DELAY
+	}
+}
+
 func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 	_, err := os.Stat(filename)
 	if err != nil {
 		return nil, err
 	}
-	if plan.CreateDump.MaxRetries == 0 {
-		plan.CreateDump.MaxRetries = 3
-	}
-	if plan.CreateDump.RetryDelay == 0 {
-		plan.CreateDump.RetryDelay = 60
-	}
-	yamlFile, err := ioutil.ReadFile(filename)
+
+	yamlFile, err := os.ReadFile(filename)
 	if err != nil {
 		return plan, err
 	}
@@ -71,6 +77,7 @@ func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 	if err != nil {
 		return plan, err
 	}
+	plan.setDefaults()
 
 	return plan, validate(plan)
 }

@@ -28,3 +28,7 @@ func Info(log string, args ...interface{}) {
 func Debug(log string, args ...interface{}) {
 	GetLogger().Debug(log, args...)
 }
+
+func Warn(log string, args ...interface{}) {
+	GetLogger().Warn(log, args...)
+}

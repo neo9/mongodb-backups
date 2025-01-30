@@ -39,7 +39,7 @@ func (scheduler *Scheduler) Run() {
 	log.Info("Name: %s, Schedule: %s", scheduler.Plan.Name, scheduler.Plan.Schedule)
 
 	err = scheduler.Cron.AddFunc("0 0 * * * *", func() {
-		scheduler.deleteOldBackups()
+		scheduler.DeleteOldBackups()
 	})
 	if err != nil {
 		log.Error("Could not schedule retention, error: %v", err)

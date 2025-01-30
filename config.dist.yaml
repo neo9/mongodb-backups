@@ -1,0 +1,11 @@
+bucket:
+  minio:
+    name: neo9-backup-dev
+    host: localhost:9000
+mongodb:
+  host: localhost
+  port: 27017
+name: neo9-backup-dev
+retention: 1w
+schedule: 0 22 * * *
+timeout: 15m

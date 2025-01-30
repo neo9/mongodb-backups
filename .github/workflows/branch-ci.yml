@@ -1,0 +1,85 @@
+name: Continuous integration in other branches that are not master
+
+on:
+  push:
+    branches-ignore:
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test
+          MONGO_INITDB_ROOT_PASSWORD: test
+          MONGO_INITDB_DATABASE: integration
+      minio:
+        image: bitnami/minio:latest
+        ports:
+          - 9000:9000
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        options: --name minio-server
+
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.4
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Run unit tests
+        run: go test ./... -v
+
+      - name: Install MongoDB Shell (mongosh)
+        run: |
+          wget -qO - https://pgp.mongodb.com/server-6.0.asc | gpg --dearmor -o /usr/share/keyrings/mongodb-server-6.0.gpg
+          echo "deb [signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
+
+      - name: Install MongoDB Database Tools (mongodump, mongorestore)
+        run: |
+          wget -qO mongodb-tools.tgz https://fastdl.mongodb.org/tools/db/mongodb-database-tools-ubuntu2004-x86_64-100.7.0.tgz
+          tar -xvf mongodb-tools.tgz
+          sudo mv mongodb-database-tools-*-100.7.0/bin/* /usr/local/bin/
+          rm -rf mongodb-tools.tgz mongodb-database-tools-*-100.7.0
+
+      - name: Verify Installation
+        run: |
+          mongosh --version
+          mongodump --version
+          mongorestore --version
+      
+      - name: Run integration test
+        run: go test -tags=integration ./...
+
+
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: ${{ secrets.DOCKER_HUB_IMAGE }}:latest
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}

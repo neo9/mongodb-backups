@@ -1,0 +1,11 @@
+bucket:
+  s3:
+    name: neo9-testing-mongodb-backups
+    region: eu-west-1
+mongodb:
+  host: mongodb-svc
+  port: 27017
+name: test
+retention: 1w
+schedule: 0 22 * * *
+timeout: 15m
