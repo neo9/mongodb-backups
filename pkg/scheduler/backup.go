@@ -38,7 +38,7 @@ func (scheduler *Scheduler) runDump() (mongodb.MongoDBDump, error) {
 	var err error
 	var mongoDBDump mongodb.MongoDBDump
 	maxRetries := scheduler.Plan.CreateDump.MaxRetries
-	retryDelay := scheduler.Plan.CreateDump.RetryDelay
+	retryDelay := scheduler.Plan.CreateDump.RetryDelay * time.Second
 
 	for i := 0; i < maxRetries; i++ {
 		mongoDBDump, err := mongodb.CreateDump(scheduler.Plan)
