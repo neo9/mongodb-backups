@@ -37,7 +37,7 @@ func (scheduler *Scheduler) Run() {
 	}
 
 	log.Info("Name: %s, Schedule: %s", scheduler.Plan.Name, scheduler.Plan.Schedule)
-	log.Info("MaxRetries: %s, RetryDelay: %s", scheduler.Plan.CreateDump.MaxRetries, scheduler.Plan.CreateDump.RetryDelay)
+	log.Info("MaxRetries: %d, RetryDelay: %s", scheduler.Plan.CreateDump.MaxRetries, scheduler.Plan.CreateDump.RetryDelay)
 
 	err = scheduler.Cron.AddFunc("0 0 * * * *", func() {
 		scheduler.DeleteOldBackups()
