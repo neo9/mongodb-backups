@@ -9,14 +9,14 @@ groups:
         annotations:
           message: MongoDB backups on {{ $labels.instance }}, for snapshot {{ $labels.name }} has not ran in the last 24H
       - alert: MongoDBBackupError
-        expr: 'mongodb_backups_scheduler_backup_total{status="error"} > 1'
+        expr: 'mongodb_backups_scheduler_backup_total{status="error"} > 0'
         for: 30s
         labels:
           severity: P3
         annotations:
           message: MongoDB backups on {{ $labels.instance }}, for snapshot {{ $labels.name }} has errors
       - alert: MongoDBBackupRetentionError
-        expr: 'mongodb_backups_scheduler_retention_total{status="error"} > 1'
+        expr: 'mongodb_backups_scheduler_retention_total{status="error"} > 0'
         for: 30s
         labels:
           severity: P3
