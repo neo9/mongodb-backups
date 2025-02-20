@@ -1,4 +1,12 @@
 
+<a name="v0.13.3"></a>
+## [v0.13.3](https://github.com/neo9/mongodb-backups/compare/v0.13.2...v0.13.3) (2025-02-20)
+
+### Fix
+
+* correct MaxRetries format
+
+
 <a name="v0.13.2"></a>
 ## [v0.13.2](https://github.com/neo9/mongodb-backups/compare/v0.13.1...v0.13.2) (2025-02-20)
 
