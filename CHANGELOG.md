@@ -1,4 +1,49 @@
 
+<a name="v0.13.2"></a>
+## [v0.13.2](https://github.com/neo9/mongodb-backups/compare/v0.13.1...v0.13.2) (2025-02-20)
+
+### Chore
+
+* alerts will be triggered when the value is greater than zero
+
+
+<a name="v0.13.1"></a>
+## [v0.13.1](https://github.com/neo9/mongodb-backups/compare/v0.13.0...v0.13.1) (2025-02-19)
+
+
+<a name="v0.13.0"></a>
+## [v0.13.0](https://github.com/neo9/mongodb-backups/compare/v0.12.0...v0.13.0) (2025-01-30)
+
+### Chore
+
+* add checkout phase
+* upgrade go 1.23.5 ([#17](https://github.com/neo9/mongodb-backups/issues/17))
+
+
+<a name="v0.12.0"></a>
+## [v0.12.0](https://github.com/neo9/mongodb-backups/compare/v0.11.0...v0.12.0) (2025-01-30)
+
+### Chore
+
+* fix deprectaed actions
+* add some integration tests ([#16](https://github.com/neo9/mongodb-backups/issues/16))
+* remove logrus core dependency
+* solve trivy conflicts
+* add local environment
+
+### Fix
+
+* BADKEY in slog json
+
+### Mongodump
+
+* add retries in CreateDump + configuration to set maxRetries and delay time
+
+### Release
+
+* v0.12.0
+
+
 <a name="v0.11.0"></a>
 ## [v0.11.0](https://github.com/neo9/mongodb-backups/compare/v0.10.0...v0.11.0) (2021-10-14)
 
