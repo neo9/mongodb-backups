@@ -3,8 +3,9 @@
 *.swp
 ./config.yaml
 ./config.yml
-.env
 mongodb-backups
 vendor
 keys/
 config.yaml
+!.env.dist
+.env.*
