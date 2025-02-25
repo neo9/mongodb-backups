@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"time"
+	"fmt"
 
 	"gopkg.in/yaml.v2"
 )
@@ -12,45 +13,45 @@ const DEFAULT_TRIES = 3
 const DEFAULT_DELAY = 60
 
 type Plan struct {
-	Name       string     `json:"name"`
-	Schedule   string     `json:"schedule"`
-	Retention  string     `json:"retention"`
-	Timeout    string     `json:"timeout"`
-	TmpPath    string     `json:"tmpPath"`
-	MongoDB    MongoDB    `json:"mongodb"`
-	Bucket     Bucket     `json:"buckets"`
-	CreateDump CreateDump `json:"createDump"`
+	Name       string     `yaml:"name"`
+	Schedule   string     `yaml:"schedule"`
+	Retention  string     `yaml:"retention"`
+	Timeout    string     `yaml:"timeout"`
+	TmpPath    string     `yaml:"tmpPath"`
+	MongoDB    MongoDB    `yaml:"mongodb"`
+	Bucket     Bucket     `yaml:"bucket"`
+	CreateDump CreateDump `yaml:"createDump"`
 }
 
 type Bucket struct {
-	S3    S3    `json:"s3"`
-	GS    GS    `json:"gs"`
-	Minio Minio `json:"minio"`
+	S3    S3    `yaml:"s3"`
+	GS    GS    `yaml:"gs"`
+	Minio Minio `yaml:"minio"`
 }
 
 type S3 struct {
-	Name   string `json:"name"`
-	Region string `json:"region"`
+	Name   string `yaml:"name"`
+	Region string `yaml:"region"`
 }
 type GS struct {
-	Name string `json:"name"`
+	Name string `yaml:"name"`
 }
 
 type Minio struct {
-	Name   string `json:"name"`
-	Host   string `json:"host"`
-	Region string `json:"region,omitempty"`
-	SSL    bool   `json:"ssl,omitempty"`
+	Name   string `yaml:"name"`
+	Host   string `yaml:"host"`
+	Region string `yaml:"region,omitempty"`
+	SSL    bool   `yaml:"ssl,omitempty"`
 }
 
 type CreateDump struct {
-	MaxRetries int           `json:"maxRetries"`
-	RetryDelay time.Duration `json:"retryDelay"`
+    MaxRetries int           `yaml:"maxRetries"`
+    RetryDelay time.Duration `yaml:"retryDelay"`
 }
 
 type MongoDB struct {
-	Host string `json:"host"`
-	Port string `json:"port"`
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 }
 
 func (plan *Plan) setDefaults() {
@@ -77,7 +78,15 @@ func (plan *Plan) GetPlan(filename string) (*Plan, error) {
 	if err != nil {
 		return plan, err
 	}
+
+
+	// 🔍 Verificar valores después de parsear YAML
+	fmt.Printf("Parsed YAML - MaxRetries: %d, RetryDelay: %v\n", plan.CreateDump.MaxRetries, plan.CreateDump.RetryDelay)
+
 	plan.setDefaults()
+
+	// 🔍 Verificar valores después de aplicar defaults
+	fmt.Printf("After Defaults - MaxRetries: %d, RetryDelay: %v\n", plan.CreateDump.MaxRetries, plan.CreateDump.RetryDelay)
 
 	return plan, validate(plan)
 }
@@ -93,3 +102,5 @@ func validate(plan *Plan) error {
 
 	return errors.New("error in configuration : should only have one type of bucket configured")
 }
+
+
