@@ -1,3 +1,10 @@
+<a name="v0.13.4"></a>
+## [v0.13.3](https://github.com/neo9/mongodb-backups/compare/v0.13.2...v0.13.3) (2025-02-25)
+
+### Fix
+
+* json to yaml values to read config file properly
+
 
 <a name="v0.13.3"></a>
 ## [v0.13.3](https://github.com/neo9/mongodb-backups/compare/v0.13.2...v0.13.3) (2025-02-20)
