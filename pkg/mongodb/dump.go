@@ -1,13 +1,15 @@
 package mongodb
 
 import (
-	"fmt"
-	"path"
-	"time"
+        "fmt"
+        "os"
+        "path"
+        "strings"
+        "time"
 
-	"github.com/neo9/mongodb-backups/pkg/config"
-	"github.com/neo9/mongodb-backups/pkg/log"
-	"github.com/neo9/mongodb-backups/pkg/utils"
+        "github.com/neo9/mongodb-backups/pkg/config"
+        "github.com/neo9/mongodb-backups/pkg/log"
+        "github.com/neo9/mongodb-backups/pkg/utils"
 )
 
 type MongoDBDump struct {
@@ -33,13 +35,7 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 		LogFile:     outputFile + ".log",
 	}
 
-	authArgs := getAuthenticationArguments()
-	dumpCommand := fmt.Sprintf(
-		"mongodump --forceTableScan --authenticationDatabase admin %s --archive=%v --gzip --host %s --port %s",
-		authArgs,
-		mongoDBDump.ArchiveFile,
-		plan.MongoDB.Host,
-		plan.MongoDB.Port)
+        dumpCommand := buildDumpCommand(plan, mongoDBDump.ArchiveFile)
 
 	duration, err := utils.GetDurationFromTimeString(plan.Timeout)
 	if err != nil {
@@ -68,5 +64,24 @@ func CreateDumpInternal(plan *config.Plan) (MongoDBDump, error) {
 }
 
 func getDumpName() string {
-	return fmt.Sprintf("mongodb-snapshot-%d", time.Now().Unix())
+        return fmt.Sprintf("mongodb-snapshot-%d", time.Now().Unix())
+}
+
+func buildDumpCommand(plan *config.Plan, archiveFile string) string {
+        authArgs := strings.TrimSpace(getAuthenticationArguments())
+        if uri, ok := os.LookupEnv("MONGO_URI"); ok {
+                cmd := fmt.Sprintf("mongodump --forceTableScan --archive=%v --gzip --uri %s", archiveFile, uri)
+                if authArgs != "" {
+                        cmd += " " + authArgs
+                }
+                return cmd
+        }
+        if authArgs != "" {
+                authArgs = " " + authArgs
+        }
+        return fmt.Sprintf("mongodump --forceTableScan --authenticationDatabase admin%s --archive=%v --gzip --host %s --port %s",
+                authArgs,
+                archiveFile,
+                plan.MongoDB.Host,
+                plan.MongoDB.Port)
 }

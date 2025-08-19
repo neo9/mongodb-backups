@@ -40,8 +40,8 @@ Parameters:
 - `timeout`: mongodb dump timeout
 - `tmpPath`: path to store tempory backup before s3 upload
 - `mongodb`:
-    - `host`: MongoDB host
-    - `port`: MongoDB port
+    - `host`: MongoDB host (ignored if `MONGO_URI` is set)
+    - `port`: MongoDB port (ignored if `MONGO_URI` is set)
 - `bucket` (fill only one option):
     - `s3`:
         - `name`: bucket name
@@ -65,6 +65,7 @@ tmpPath: /tmp
 mongodb:
   host: localhost
   port: 27017
+# host and port can be omitted when MONGO_URI environment variable is provided
 createDump:
   maxRetries: 3
   retryDelay: 60
@@ -100,6 +101,7 @@ All metrics have the label `name` equals to the config `name` key.
 - `MONGODB_USER`: MongoDB user
 - `MONGODB_PASSWORD`: MongoDB password
 - `MONGODB_AUTH_ARGS`: MongoDB additional authentication arguments
+- `MONGO_URI`: MongoDB connection string URI (overrides host, port, user and password)
 
 ### AWS
 

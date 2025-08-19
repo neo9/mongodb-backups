@@ -5,6 +5,7 @@ bucket:
 mongodb:
   host: localhost
   port: 27017
+# host and port can be omitted when MONGO_URI environment variable is provided
 name: neo9-backup-dev
 retention: 1w
 schedule: 0 22 * * *

@@ -1,26 +1,20 @@
 package mongodb
 
 import (
-	"encoding/base64"
-	"fmt"
-	"strings"
-	"time"
+        "encoding/base64"
+        "fmt"
+        "os"
+        "strings"
+        "time"
 
-	"github.com/neo9/mongodb-backups/pkg/config"
-	"github.com/neo9/mongodb-backups/pkg/log"
-	"github.com/neo9/mongodb-backups/pkg/utils"
+        "github.com/neo9/mongodb-backups/pkg/config"
+        "github.com/neo9/mongodb-backups/pkg/log"
+        "github.com/neo9/mongodb-backups/pkg/utils"
 )
 
 func RestoreDump(filename string, args string, plan *config.Plan) error {
-	authArgs := getAuthenticationArguments()
-	restoreCommand := fmt.Sprintf(
-		"mongorestore --authenticationDatabase admin %s --archive=%s --gzip %s --host %s --port %s --nsExclude admin.*",
-		authArgs,
-		filename,
-		args,
-		plan.MongoDB.Host,
-		plan.MongoDB.Port)
-	fmt.Print(restoreCommand)
+        restoreCommand := buildRestoreCommand(filename, args, plan)
+        fmt.Print(restoreCommand)
 
 	duration, err := utils.GetDurationFromTimeString(plan.Timeout)
 	if err != nil {
@@ -59,9 +53,30 @@ func displayOutput(output string) {
 }
 
 func decodeBase64(input string) (string, error) {
-	decoded, err := base64.StdEncoding.DecodeString(input)
-	if err != nil {
-		return "", err
-	}
-	return string(decoded), nil
+        decoded, err := base64.StdEncoding.DecodeString(input)
+        if err != nil {
+                return "", err
+        }
+        return string(decoded), nil
+}
+
+func buildRestoreCommand(filename string, args string, plan *config.Plan) string {
+        authArgs := strings.TrimSpace(getAuthenticationArguments())
+        if uri, ok := os.LookupEnv("MONGO_URI"); ok {
+                cmd := fmt.Sprintf("mongorestore --archive=%s --gzip %s --uri %s", filename, args, uri)
+                if authArgs != "" {
+                        cmd += " " + authArgs
+                }
+                cmd += " --nsExclude admin.*"
+                return cmd
+        }
+        if authArgs != "" {
+                authArgs = " " + authArgs
+        }
+        return fmt.Sprintf("mongorestore --authenticationDatabase admin%s --archive=%s --gzip %s --host %s --port %s --nsExclude admin.*",
+                authArgs,
+                filename,
+                args,
+                plan.MongoDB.Host,
+                plan.MongoDB.Port)
 }

@@ -32,16 +32,21 @@ spec:
         env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/config-creds/mongo-backup-sa.json
-          - name: MONGODB_USER
+          - name: MONGO_URI # use instead of MONGODB_USER/MONGODB_PASSWORD and host/port
             valueFrom:
               secretKeyRef:
-                key: MONGODB_USER
+                key: MONGO_URI
                 name: mongodb-backups
-          - name: MONGODB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: MONGODB_PASSWORD
-                name: mongodb-backups
+          # - name: MONGODB_USER
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: MONGODB_USER
+          #       name: mongodb-backups
+          # - name: MONGODB_PASSWORD
+          #   valueFrom:
+          #     secretKeyRef:
+          #       key: MONGODB_PASSWORD
+          #       name: mongodb-backups
         resources:
           limits:
             memory: 1Gi

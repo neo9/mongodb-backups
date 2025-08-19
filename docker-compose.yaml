@@ -24,8 +24,10 @@ services:
     environment:
       MINIO_ACCESS_KEY_ID: minioadmin
       MINIO_SECRET_ACCESS_KEY: minioadmin
-      MONGODB_USER: dev
-      MONGODB_PASSWORD: dev
+      # MONGO_URI can be used instead of MONGODB_USER/MONGODB_PASSWORD and host/port
+      MONGO_URI: mongodb://dev:dev@mongo:27017/admin
+      # MONGODB_USER: dev
+      # MONGODB_PASSWORD: dev
     volumes:
       - ./config.yaml:/home/config.yaml
     command: sleep infinity
