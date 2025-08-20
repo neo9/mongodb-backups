@@ -1,9 +1,30 @@
+
+<a name="v0.14.0"></a>
+## [v0.14.0](https://github.com/neo9/mongodb-backups/compare/v0.13.4...v0.14.0) (2025-08-19)
+
+### Feat
+
+* add MONGO_URI support
+
+### Release
+
+* v0.13.4
+
+
 <a name="v0.13.4"></a>
-## [v0.13.3](https://github.com/neo9/mongodb-backups/compare/v0.13.2...v0.13.3) (2025-02-25)
+## [v0.13.4](https://github.com/neo9/mongodb-backups/compare/v0.13.3...v0.13.4) (2025-02-25)
+
+### Chore
+
+* gitignore updated
 
 ### Fix
 
-* json to yaml values to read config file properly
+* change json to yaml format
+
+### Release
+
+* v0.13.3
 
 
 <a name="v0.13.3"></a>
