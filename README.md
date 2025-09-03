@@ -105,8 +105,13 @@ All metrics have the label `name` equals to the config `name` key.
 
 ### AWS
 
-- `AWS_ACCESS_KEY_ID`: AWS secret key ID
-- `AWS_SECRET_ACCESS_KEY`: AWS secret access key
+- `AWS_ACCESS_KEY_ID`: AWS access key ID (optional)
+- `AWS_SECRET_ACCESS_KEY`: AWS secret access key (optional)
+
+When running in Kubernetes with a service account that has the appropriate
+bucket permissions (for example IAM Roles for Service Accounts), the
+application automatically uses the service account credentials and these
+variables are not required.
 
 ### Minio
 

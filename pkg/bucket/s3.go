@@ -27,14 +27,17 @@ type S3File struct {
 }
 
 func NewS3Bucket(s3 *config.S3) *S3Bucket {
-	s3Session := session.Must(session.NewSession(&aws.Config{
-		Region: aws.String(s3.Region),
-	}))
+        s3Session := session.Must(session.NewSessionWithOptions(session.Options{
+                Config: aws.Config{
+                        Region: aws.String(s3.Region),
+                },
+                SharedConfigState: session.SharedConfigEnable,
+        }))
 
-	return &S3Bucket{
-		Session: s3Session,
-		S3:      s3,
-	}
+        return &S3Bucket{
+                Session: s3Session,
+                S3:      s3,
+        }
 }
 
 func (bucket *S3Bucket) Upload(filename string, destFolder string) error {
